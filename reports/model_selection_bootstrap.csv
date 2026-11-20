@@ -1,0 +1,2 @@
+selected_model,comparator,average_precision_delta,roc_auc_delta,average_precision_delta_low,average_precision_delta_high,roc_auc_delta_low,roc_auc_delta_high,bootstrap_replicates,interpretation
+Histogram Gradient Boosting,Random Forest,0.002234454330233282,0.0024875926516008118,-0.004787740498832479,0.01008700460532275,-0.0001393059382414463,0.005391825416164128,1000,"Paired validation bootstrap; exploratory and selection-conditioned, not confirmatory."

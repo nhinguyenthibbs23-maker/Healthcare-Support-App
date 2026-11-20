@@ -1,0 +1,4 @@
+questionnaire,feature_count,train_rows,validation_rows,roc_auc,average_precision,brier,parameters
+5 inputs (previous form),5,40000,10000,0.8241748670752814,0.4310887788267913,0.0977818079448493,Selected 8-input model settings held fixed
+8 inputs (current form),8,40000,10000,0.8243458104502883,0.43287978532747523,0.09774957889099671,Selected 8-input model settings held fixed
+21 inputs (all predictors),21,40000,10000,0.8284663205313241,0.43749783455828,0.09713662668849295,Selected 8-input model settings held fixed

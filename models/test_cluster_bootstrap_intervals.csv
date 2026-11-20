@@ -1,0 +1,4 @@
+metric,estimate,ci_95_low,ci_95_high,bootstrap_replicates,resampling_unit
+roc_auc,0.8194663787220546,0.8143371668154072,0.8249812121516732,300,Full 21-predictor profile cluster
+average_precision,0.41750600996273735,0.405573166727827,0.42937715984597535,300,Full 21-predictor profile cluster
+brier,0.09813532575885744,0.09639085941261251,0.10001524217982079,300,Full 21-predictor profile cluster

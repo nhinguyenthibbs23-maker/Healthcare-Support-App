@@ -1,0 +1,4 @@
+metric,estimate,ci_95_low,ci_95_high,numerator,denominator,method
+precision,0.3276008631399987,0.32020642304737673,0.33508189158966867,5010,15293,Wilson interval; observation-level
+recall,0.7092298980747452,0.6985285641649426,0.719703793935125,5010,7064,Wilson interval; observation-level
+false_positive_rate,0.23465382684496372,0.2307094366037308,0.23864473376966347,10283,43822,Wilson interval; observation-level

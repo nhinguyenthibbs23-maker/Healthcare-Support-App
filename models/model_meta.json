@@ -1,0 +1,3389 @@
+{
+  "target": "Diabetes_binary",
+  "target_meaning": {
+    "0": "No self-reported diabetes/prediabetes",
+    "1": "Self-reported diabetes or prediabetes"
+  },
+  "sources": {
+    "Dataset": "https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset",
+    "CDC codebook": "https://www.cdc.gov/brfss/annual_data/2015/pdf/CODEBOOK15_LLCP.pdf",
+    "CDC survey": "https://www.cdc.gov/brfss/annual_data/annual_2015.html"
+  },
+  "rows": 253680,
+  "features": [
+    "Age",
+    "BMI",
+    "HighBP",
+    "HighChol",
+    "GenHlth",
+    "Smoker",
+    "PhysActivity",
+    "DiffWalk"
+  ],
+  "feature_names": [
+    "Age",
+    "BMI",
+    "HighBP",
+    "HighChol",
+    "GenHlth",
+    "Smoker",
+    "PhysActivity",
+    "DiffWalk"
+  ],
+  "valid_input_ranges": {
+    "Age": [
+      1.0,
+      13.0
+    ],
+    "BMI": [
+      12.0,
+      98.0
+    ],
+    "HighBP": [
+      0.0,
+      1.0
+    ],
+    "HighChol": [
+      0.0,
+      1.0
+    ],
+    "GenHlth": [
+      1.0,
+      5.0
+    ],
+    "Smoker": [
+      0.0,
+      1.0
+    ],
+    "PhysActivity": [
+      0.0,
+      1.0
+    ],
+    "DiffWalk": [
+      0.0,
+      1.0
+    ]
+  },
+  "valid_values": {
+    "Age": [
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0,
+      6.0,
+      7.0,
+      8.0,
+      9.0,
+      10.0,
+      11.0,
+      12.0,
+      13.0
+    ],
+    "HighBP": [
+      0.0,
+      1.0
+    ],
+    "HighChol": [
+      0.0,
+      1.0
+    ],
+    "GenHlth": [
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0
+    ],
+    "Smoker": [
+      0.0,
+      1.0
+    ],
+    "PhysActivity": [
+      0.0,
+      1.0
+    ],
+    "DiffWalk": [
+      0.0,
+      1.0
+    ]
+  },
+  "algorithm": "Histogram Gradient Boosting",
+  "selected_candidate": "short | tuned | Histogram Gradient Boosting",
+  "threshold": 0.1693304341421451,
+  "cost_assumptions": {
+    "FP": 1,
+    "FN": 5,
+    "units": "illustrative relative units, not medical costs"
+  },
+  "test_metrics": {
+    "roc_auc": 0.8194663787220546,
+    "average_precision": 0.41750600996273735,
+    "brier": 0.09813532575885744,
+    "precision": 0.3276008631399987,
+    "recall": 0.7092298980747452,
+    "f1": 0.4481817775193452,
+    "confusion_matrix": [
+      [
+        33539,
+        10283
+      ],
+      [
+        2054,
+        5010
+      ]
+    ],
+    "n": 50886,
+    "positive_count": 7064
+  },
+  "test_metrics_deduplicated": {
+    "roc_auc": 0.8031174323604787,
+    "average_precision": 0.4194984358877163,
+    "brier": 0.10756667655636246,
+    "precision": 0.32999336429993364,
+    "recall": 0.7098201541535827,
+    "f1": 0.4505345171226672,
+    "confusion_matrix": [
+      [
+        28775,
+        10097
+      ],
+      [
+        2033,
+        4973
+      ]
+    ],
+    "n": 45878,
+    "positive_count": 7006
+  },
+  "validation_metrics": {
+    "roc_auc": 0.8180492815119735,
+    "average_precision": 0.4181316550659837,
+    "brier": 0.09877938182860099,
+    "precision": 0.3277513520557764,
+    "recall": 0.7109540636042403,
+    "f1": 0.4486664882704487,
+    "confusion_matrix": [
+      [
+        33334,
+        10317
+      ],
+      [
+        2045,
+        5030
+      ]
+    ],
+    "n": 50726,
+    "positive_count": 7075
+  },
+  "validation_metrics_deduplicated": {
+    "roc_auc": 0.8028487989359584,
+    "average_precision": 0.42095760115764636,
+    "brier": 0.10789256794726657,
+    "precision": 0.33062652670495807,
+    "recall": 0.7129840546697038,
+    "f1": 0.4517613098191331,
+    "confusion_matrix": [
+      [
+        28732,
+        10139
+      ],
+      [
+        2016,
+        5008
+      ]
+    ],
+    "n": 45895,
+    "positive_count": 7024
+  },
+  "validation_candidates": [
+    {
+      "candidate": "full | Logistic Regression",
+      "feature_set": "full",
+      "algorithm": "Logistic Regression",
+      "n_features": 21,
+      "roc_auc": 0.8299779031529139,
+      "average_precision": 0.4185411877884183,
+      "brier": 0.09756147665124121,
+      "precision": 0.5599022004889975,
+      "recall": 0.16415770609318997,
+      "f1": 0.25388026607538805,
+      "confusion_matrix": [
+        [
+          8425,
+          180
+        ],
+        [
+          1166,
+          229
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "full | Random Forest",
+      "feature_set": "full",
+      "algorithm": "Random Forest",
+      "n_features": 21,
+      "roc_auc": 0.8229697246120555,
+      "average_precision": 0.42861434184444813,
+      "brier": 0.0981121768564316,
+      "precision": 0.655367231638418,
+      "recall": 0.08315412186379928,
+      "f1": 0.1475826972010178,
+      "confusion_matrix": [
+        [
+          8544,
+          61
+        ],
+        [
+          1279,
+          116
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "full | Gradient Boosting",
+      "feature_set": "full",
+      "algorithm": "Gradient Boosting",
+      "n_features": 21,
+      "roc_auc": 0.8334098913068378,
+      "average_precision": 0.44002035995080957,
+      "brier": 0.0962887593871659,
+      "precision": 0.6056338028169014,
+      "recall": 0.18494623655913978,
+      "f1": 0.2833607907742998,
+      "confusion_matrix": [
+        [
+          8437,
+          168
+        ],
+        [
+          1137,
+          258
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | Decision Tree",
+      "feature_set": "short",
+      "algorithm": "Decision Tree",
+      "n_features": 8,
+      "roc_auc": 0.8060915238493913,
+      "average_precision": 0.4047106304739679,
+      "brier": 0.1000037463835385,
+      "precision": 0.5446009389671361,
+      "recall": 0.16630824372759856,
+      "f1": 0.25480505216913785,
+      "confusion_matrix": [
+        [
+          8411,
+          194
+        ],
+        [
+          1163,
+          232
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | Logistic Regression",
+      "feature_set": "short",
+      "algorithm": "Logistic Regression",
+      "n_features": 8,
+      "roc_auc": 0.8232411347074615,
+      "average_precision": 0.4155642573565038,
+      "brier": 0.09837554915603185,
+      "precision": 0.5738161559888579,
+      "recall": 0.14767025089605734,
+      "f1": 0.2348916761687571,
+      "confusion_matrix": [
+        [
+          8452,
+          153
+        ],
+        [
+          1189,
+          206
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | Naive Bayes",
+      "feature_set": "short",
+      "algorithm": "Naive Bayes",
+      "n_features": 8,
+      "roc_auc": 0.790760560564313,
+      "average_precision": 0.3623281391685417,
+      "brier": 0.2875759560972571,
+      "precision": 0.27297297297297296,
+      "recall": 0.796415770609319,
+      "f1": 0.40658737419945107,
+      "confusion_matrix": [
+        [
+          5646,
+          2959
+        ],
+        [
+          284,
+          1111
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | K-Nearest Neighbors",
+      "feature_set": "short",
+      "algorithm": "K-Nearest Neighbors",
+      "n_features": 8,
+      "roc_auc": 0.8149600444852643,
+      "average_precision": 0.415657887203801,
+      "brier": 0.09882131163611411,
+      "precision": 0.6061643835616438,
+      "recall": 0.12688172043010754,
+      "f1": 0.2098399525785418,
+      "confusion_matrix": [
+        [
+          8490,
+          115
+        ],
+        [
+          1218,
+          177
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | Support Vector Machine (linear)",
+      "feature_set": "short",
+      "algorithm": "Support Vector Machine (linear)",
+      "n_features": 8,
+      "roc_auc": 0.8236963172615738,
+      "average_precision": 0.4136464502972407,
+      "brier": 0.09847461142023212,
+      "precision": 0.5702479338842975,
+      "recall": 0.14838709677419354,
+      "f1": 0.2354948805460751,
+      "confusion_matrix": [
+        [
+          8449,
+          156
+        ],
+        [
+          1188,
+          207
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | Random Forest",
+      "feature_set": "short",
+      "algorithm": "Random Forest",
+      "n_features": 8,
+      "roc_auc": 0.8218582177986875,
+      "average_precision": 0.43064533099724195,
+      "brier": 0.09791592835274382,
+      "precision": 0.6202090592334495,
+      "recall": 0.12759856630824373,
+      "f1": 0.2116527942925089,
+      "confusion_matrix": [
+        [
+          8496,
+          109
+        ],
+        [
+          1217,
+          178
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | Extra Trees",
+      "feature_set": "short",
+      "algorithm": "Extra Trees",
+      "n_features": 8,
+      "roc_auc": 0.8104028040711515,
+      "average_precision": 0.40216916772694633,
+      "brier": 0.10017000475595252,
+      "precision": 0.5964125560538116,
+      "recall": 0.0953405017921147,
+      "f1": 0.16440049443757726,
+      "confusion_matrix": [
+        [
+          8515,
+          90
+        ],
+        [
+          1262,
+          133
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | Gradient Boosting",
+      "feature_set": "short",
+      "algorithm": "Gradient Boosting",
+      "n_features": 8,
+      "roc_auc": 0.8251845326235684,
+      "average_precision": 0.43017871396540663,
+      "brier": 0.09757556321797076,
+      "precision": 0.5831325301204819,
+      "recall": 0.17347670250896058,
+      "f1": 0.2674033149171271,
+      "confusion_matrix": [
+        [
+          8432,
+          173
+        ],
+        [
+          1153,
+          242
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    },
+    {
+      "candidate": "short | tuned | Histogram Gradient Boosting",
+      "feature_set": "short",
+      "algorithm": "Histogram Gradient Boosting",
+      "n_features": 8,
+      "roc_auc": 0.8243458104502883,
+      "average_precision": 0.43287978532747523,
+      "brier": 0.09774957889099671,
+      "precision": 0.6095890410958904,
+      "recall": 0.12759856630824373,
+      "f1": 0.2110254890337878,
+      "confusion_matrix": [
+        [
+          8491,
+          114
+        ],
+        [
+          1217,
+          178
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    }
+  ],
+  "validation_reference_models": [
+    {
+      "candidate": "baseline: Age + BMI only | Logistic Regression",
+      "feature_set": "baseline",
+      "algorithm": "Logistic Regression",
+      "n_features": 2,
+      "roc_auc": 0.7521298153320045,
+      "average_precision": 0.3181464675191038,
+      "brier": 0.10888123700800036,
+      "precision": 0.45454545454545453,
+      "recall": 0.03225806451612903,
+      "f1": 0.060240963855421686,
+      "confusion_matrix": [
+        [
+          8551,
+          54
+        ],
+        [
+          1350,
+          45
+        ]
+      ],
+      "n": 10000,
+      "positive_count": 1395
+    }
+  ],
+  "model_search": {
+    "method": "RandomizedSearchCV with 3-fold StratifiedGroupKFold; Average Precision scored on 10,000 stratified training rows; up to 16 draws per model (finite spaces may be smaller).",
+    "models": [
+      "Gradient Boosting",
+      "Logistic Regression",
+      "Support Vector Machine (linear)",
+      "Histogram Gradient Boosting",
+      "Random Forest",
+      "K-Nearest Neighbors",
+      "Extra Trees",
+      "Naive Bayes",
+      "Decision Tree"
+    ],
+    "search_sample_rows": 10000,
+    "comparison_refit_rows": 40000,
+    "comparison_validation_rows": 10000,
+    "selected_parameters": {
+      "model__l2_regularization": 0.0,
+      "model__learning_rate": 0.03,
+      "model__max_iter": 100,
+      "model__max_leaf_nodes": 15
+    },
+    "selected_candidate_validation_average_precision": 0.43287978532747523,
+    "parameter_draws_requested_max": 16,
+    "parameter_draws_per_model_actual": {
+      "Gradient Boosting": 16,
+      "Logistic Regression": 10,
+      "Support Vector Machine (linear)": 10,
+      "Histogram Gradient Boosting": 16,
+      "Random Forest": 16,
+      "K-Nearest Neighbors": 16,
+      "Extra Trees": 16,
+      "Naive Bayes": 4,
+      "Decision Tree": 16
+    }
+  },
+  "pca_experiment": {
+    "report": "reports/pca_comparison.csv",
+    "encoded_dimensions": 29,
+    "effective_rank": 22,
+    "validation_rows": 50726,
+    "used_for_final_pipeline": false
+  },
+  "questionnaire_size_comparison": {
+    "report": "reports/questionnaire_size_comparison.csv",
+    "validation_rows": 10000,
+    "selected_estimator": "Histogram Gradient Boosting",
+    "settings_held_fixed": true
+  },
+  "validation_uncertainty": {
+    "model_selection": "reports/model_selection_bootstrap.csv",
+    "questionnaire_size": "reports/questionnaire_size_bootstrap.csv",
+    "threshold_cost_sensitivity": "reports/threshold_cost_sensitivity.csv",
+    "interpretation": "Bootstrap intervals are exploratory; model selection and feature experiments reused validation data."
+  },
+  "evaluation_uncertainty": {
+    "test_cluster_bootstrap": "reports/test_cluster_bootstrap_intervals.csv",
+    "operating_point_intervals": "reports/test_operating_point_intervals.csv",
+    "calibration": "reports/test_calibration_by_decile.csv",
+    "fairness_intervals": "models/fairness.csv"
+  },
+  "explanation": {
+    "method": "Exact Shapley values over the questions, on the probability scale, relative to the average of a 256-row training background. Contributions add up to (your estimate - background average).",
+    "background": [
+      {
+        "Age": 7.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 22.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 23.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 33.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 31.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 40.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 34.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 28.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 31.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 33.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 21.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 28.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 33.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 22.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 20.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 36.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 1.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 60.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 32.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 36.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 28.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 32.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 34.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 43.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 40.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 39.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 28.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 33.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 28.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 19.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 23.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 32.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 1.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 23.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 46.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 24.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 39.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 19.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 37.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 28.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 31.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 19.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 37.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 23.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 32.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 33.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 20.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 29.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 36.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 32.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 23.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 34.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 36.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 35.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 18.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 40.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 28.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 18.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 5.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 32.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 36.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 17.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 30.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 40.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 28.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 32.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 31.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 28.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 33.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 35.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 3.0,
+        "BMI": 19.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 5.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 40.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 30.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 28.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 42.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 28.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 18.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 19.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 33.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 30.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 30.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 21.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 31.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 24.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 28.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 28.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 25.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 4.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 5.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 33.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 30.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 46.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 28.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 33.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 27.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 24.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 29.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 4.0,
+        "BMI": 31.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 13.0,
+        "BMI": 26.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 23.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 33.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 2.0,
+        "BMI": 25.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 6.0,
+        "BMI": 46.0,
+        "HighBP": 1.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 9.0,
+        "BMI": 27.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 12.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 10.0,
+        "BMI": 22.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 26.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 2.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 7.0,
+        "BMI": 41.0,
+        "HighBP": 0.0,
+        "HighChol": 1.0,
+        "GenHlth": 3.0,
+        "Smoker": 1.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      },
+      {
+        "Age": 11.0,
+        "BMI": 44.0,
+        "HighBP": 1.0,
+        "HighChol": 1.0,
+        "GenHlth": 5.0,
+        "Smoker": 0.0,
+        "PhysActivity": 0.0,
+        "DiffWalk": 1.0
+      },
+      {
+        "Age": 8.0,
+        "BMI": 20.0,
+        "HighBP": 0.0,
+        "HighChol": 0.0,
+        "GenHlth": 1.0,
+        "Smoker": 0.0,
+        "PhysActivity": 1.0,
+        "DiffWalk": 0.0
+      }
+    ]
+  },
+  "feature_selection": {
+    "full_validation_auc": 0.8197381655538436,
+    "short_validation_auc": 0.812775334811471,
+    "train_sample_rows": 40000,
+    "validation_sample_rows": 40726,
+    "forward_top_k": [
+      "GenHlth",
+      "HighBP",
+      "BMI",
+      "Age",
+      "HighChol",
+      "HvyAlcoholConsump",
+      "CholCheck",
+      "HeartDiseaseorAttack"
+    ],
+    "forward_top_k_equals_short": false
+  },
+  "bmi_cap": null,
+  "bmi_handling": "Original BMI values retained; no upper cap",
+  "selection_rule": "Run a 3-fold grouped randomized search with 16 randomized parameter draws per course model on a stratified 10,000-row training sample. Among eight-input candidates whose validation ROC-AUC is within 0.010 of the best full-feature baseline, select the highest validation Average Precision. Refit that candidate on the full training partition, select its operating threshold on the full validation partition using FP=1 and FN=5, then evaluate once on the untouched test set.",
+  "short_auc_gap": 0.008225358683269457,
+  "audit": {
+    "rows": 253680,
+    "columns": [
+      "Diabetes_binary",
+      "HighBP",
+      "HighChol",
+      "CholCheck",
+      "BMI",
+      "Smoker",
+      "Stroke",
+      "HeartDiseaseorAttack",
+      "PhysActivity",
+      "Fruits",
+      "Veggies",
+      "HvyAlcoholConsump",
+      "AnyHealthcare",
+      "NoDocbcCost",
+      "GenHlth",
+      "MentHlth",
+      "PhysHlth",
+      "DiffWalk",
+      "Sex",
+      "Age",
+      "Education",
+      "Income"
+    ],
+    "dtypes": {
+      "Diabetes_binary": "float64",
+      "HighBP": "float64",
+      "HighChol": "float64",
+      "CholCheck": "float64",
+      "BMI": "float64",
+      "Smoker": "float64",
+      "Stroke": "float64",
+      "HeartDiseaseorAttack": "float64",
+      "PhysActivity": "float64",
+      "Fruits": "float64",
+      "Veggies": "float64",
+      "HvyAlcoholConsump": "float64",
+      "AnyHealthcare": "float64",
+      "NoDocbcCost": "float64",
+      "GenHlth": "float64",
+      "MentHlth": "float64",
+      "PhysHlth": "float64",
+      "DiffWalk": "float64",
+      "Sex": "float64",
+      "Age": "float64",
+      "Education": "float64",
+      "Income": "float64"
+    },
+    "missing": {
+      "Diabetes_binary": 0,
+      "HighBP": 0,
+      "HighChol": 0,
+      "CholCheck": 0,
+      "BMI": 0,
+      "Smoker": 0,
+      "Stroke": 0,
+      "HeartDiseaseorAttack": 0,
+      "PhysActivity": 0,
+      "Fruits": 0,
+      "Veggies": 0,
+      "HvyAlcoholConsump": 0,
+      "AnyHealthcare": 0,
+      "NoDocbcCost": 0,
+      "GenHlth": 0,
+      "MentHlth": 0,
+      "PhysHlth": 0,
+      "DiffWalk": 0,
+      "Sex": 0,
+      "Age": 0,
+      "Education": 0,
+      "Income": 0
+    },
+    "exact_duplicate_rows": 24206,
+    "conflicting_predictor_profiles": 1566,
+    "class_counts": {
+      "0": 218334,
+      "1": 35346
+    },
+    "ranges": {
+      "Diabetes_binary": [
+        0.0,
+        1.0
+      ],
+      "HighBP": [
+        0.0,
+        1.0
+      ],
+      "HighChol": [
+        0.0,
+        1.0
+      ],
+      "CholCheck": [
+        0.0,
+        1.0
+      ],
+      "BMI": [
+        12.0,
+        98.0
+      ],
+      "Smoker": [
+        0.0,
+        1.0
+      ],
+      "Stroke": [
+        0.0,
+        1.0
+      ],
+      "HeartDiseaseorAttack": [
+        0.0,
+        1.0
+      ],
+      "PhysActivity": [
+        0.0,
+        1.0
+      ],
+      "Fruits": [
+        0.0,
+        1.0
+      ],
+      "Veggies": [
+        0.0,
+        1.0
+      ],
+      "HvyAlcoholConsump": [
+        0.0,
+        1.0
+      ],
+      "AnyHealthcare": [
+        0.0,
+        1.0
+      ],
+      "NoDocbcCost": [
+        0.0,
+        1.0
+      ],
+      "GenHlth": [
+        1.0,
+        5.0
+      ],
+      "MentHlth": [
+        0.0,
+        30.0
+      ],
+      "PhysHlth": [
+        0.0,
+        30.0
+      ],
+      "DiffWalk": [
+        0.0,
+        1.0
+      ],
+      "Sex": [
+        0.0,
+        1.0
+      ],
+      "Age": [
+        1.0,
+        13.0
+      ],
+      "Education": [
+        1.0,
+        6.0
+      ],
+      "Income": [
+        1.0,
+        8.0
+      ]
+    },
+    "splits": {
+      "train": {
+        "n": 152068,
+        "positive_rate": 0.13945734802851356
+      },
+      "validation": {
+        "n": 50726,
+        "positive_rate": 0.1394748255332571
+      },
+      "test": {
+        "n": 50886,
+        "positive_rate": 0.13882010769170303
+      }
+    },
+    "duplicates": {
+      "extra_copies_by_class": {
+        "0": 23957,
+        "1": 249
+      },
+      "positive_rate_all_rows": 0.13933301797540207,
+      "positive_rate_after_dedup": 0.1529454317264701
+    },
+    "bmi_positive_rate_by_bin": {
+      "(0.0, 18.5]": 0.05404541093700032,
+      "(18.5, 25.0]": 0.062474593200850186,
+      "(25.0, 30.0]": 0.12682065455821706,
+      "(30.0, 35.0]": 0.2115267810946393,
+      "(35.0, 40.0]": 0.2853107344632768,
+      "(40.0, 50.0]": 0.3417884780739467,
+      "(50.0, 60.0]": 0.3883211678832117,
+      "(60.0, inf]": 0.2124223602484472
+    },
+    "bmi_cap": null,
+    "bmi_handling": "Original BMI values retained; no upper cap"
+  },
+  "versions": {
+    "python": "3.13.9",
+    "sklearn": "1.7.1",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "scipy": "1.15.3"
+  },
+  "sha256": "19f367e3e3350768f0c144c5d73ee5b355f67a57eaaa86ca7bd8aec594d8b1d0",
+  "reference": {
+    "Age": 8.0,
+    "BMI": 27.0,
+    "HighBP": 0.0,
+    "HighChol": 0.0,
+    "GenHlth": 2.0,
+    "Smoker": 0.0,
+    "PhysActivity": 1.0,
+    "DiffWalk": 0.0
+  },
+  "split_method": "Approximately 60/20/20 folds over unique full 21-feature profiles, stratified by each profile majority target; all original rows for a profile stay in one partition. Original rows retained; no respondent IDs available.",
+  "imbalance": "No oversampling or class weights: retain original prevalence and probability scale. Asymmetric validation cost selects operating threshold. Report PR-AUC, Brier, recall and precision; accuracy is not selection criterion.",
+  "intended_use": "Educational retrospective classification of a self-reported BRFSS 2015 survey label. Not a screening, triage, diagnosis, individual clinical probability, or future-onset model. The source population includes respondents with prior diagnoses; the app makes no undiagnosed-population claim.",
+  "target_population_alignment": "The outcome combines self-reported diabetes/prediabetes, including previously diagnosed respondents. The feature set does not identify undiagnosed disease. Consequently, the application is explicitly framed as a survey-label classification demonstration rather than an undiagnosed screening tool."
+}
