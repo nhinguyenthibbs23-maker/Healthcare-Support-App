@@ -135,12 +135,12 @@ with st.container(border=True):
             bmi_color = "#DC2626"
 
         st.markdown(f"""
-        <div style="display:flex;align-items:center;justify-content:space-between;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px 18px;margin-top:12px;">
-            <div style="font-size:0.92rem;color:#475569;">
-                {tr("Chỉ số BMI tính được:", "Calculated BMI:")}
-                <strong style="font-size:1.15rem;color:#142D4E;margin-left:4px;">{bmi_calc:.1f} kg/m²</strong>
+        <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:14px 20px;margin:14px 0 6px 0;">
+            <div style="display:inline-flex;align-items:center;gap:6px;font-size:0.95rem;color:#475569;line-height:1.2;">
+                <span>{tr("Chỉ số BMI tính được:", "Calculated BMI:")}</span>
+                <strong style="font-size:1.15rem;color:#142D4E;line-height:1.2;">{bmi_calc:.1f} kg/m²</strong>
             </div>
-            <span style="background:{bmi_color};color:#fff;font-size:0.8rem;font-weight:700;padding:4px 12px;border-radius:999px;">
+            <span style="display:inline-flex;align-items:center;background:{bmi_color};color:#fff;font-size:0.82rem;font-weight:700;padding:5px 14px;border-radius:999px;line-height:1.2;">
                 {bmi_cat_lbl}
             </span>
         </div>
