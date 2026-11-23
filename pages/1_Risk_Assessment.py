@@ -1,367 +1,531 @@
+import json
 import streamlit as st
+import streamlit.components.v1 as components
 
-from utils.i18n import age_labels, health_labels
-from utils.prediction import predict
-from utils.ui import style, tr
+from utils.i18n import pick_language, lang
+from utils.ui import (
+    style,
+    html,
+    tr,
+    get_doctor_data_uri,
+    get_eiu_logo_data_uri,
+    get_eiu_logo_bilingual_svg,
+    EIU_LOGO_TRANSPARENT_SVG,
+    DOCTOR_SVG,
+    HEART_PULSE_SVG,
+    SHIELD_PLUS_SVG,
+)
+
+if "lang" not in st.session_state:
+    st.session_state["lang"] = "vi"
+if "app_mode" not in st.session_state:
+    st.session_state["app_mode"] = "user"
+
+st.set_page_config(
+    page_title="GlucoGuide",
+    page_icon="🩺",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
 style()
 
-S = st.session_state
-F = S.setdefault("form", {})
-step = int(S.setdefault("assess_step", 1))
-if step < 1 or step > 8:
-    step = 1
-    S["assess_step"] = 1
 
-TOTAL_STEPS = 8
+def home_view():
+    """Home Page matching Image 1 design with doctor photo & 3-step How It Works."""
+    doctor_uri = get_doctor_data_uri()
+    cur_l = st.session_state.get("lang", "vi")
+    speech_script = tr(
+        "Xin chào! Hãy cùng tôi dành 2 phút đánh giá nguy cơ để chủ động bảo vệ sức khỏe trước bệnh tiểu đường nhé!",
+        "Hello! Spend 2 minutes with me to assess your risk and proactively protect your health against diabetes!"
+    )
+    bubble_title = tr("Bác sĩ Nguyễn Hoài Đức", "Dr. Nguyen Hoai Duc")
+    bubble_hint = tr("Bấm để nghe bác sĩ nói", "Click to hear doctor speak")
+    listen_lbl = tr("Nghe nói", "Listen")
+    stop_lbl = tr("Dừng", "Stop")
+    script_json = json.dumps(speech_script)
 
-YES_NO_MAP = {"yes": tr("Có", "Yes"), "no": tr("Không", "No")}
-UNKNOWN_MAP = {
-    "yes": tr("Có", "Yes"),
-    "no": tr("Không", "No"),
-    "unknown": tr("Không rõ / Chưa từng đo", "Unknown / Never checked"),
-}
+    doctor_img_tag = (
+        f'<img src="{doctor_uri}" alt="{bubble_title}" class="hero-doctor-img"/>'
+        if doctor_uri
+        else f'<div style="padding-bottom:1.2rem;">{DOCTOR_SVG}</div>'
+    )
 
-age_list = age_labels()
-age_values = [str(i + 1) for i in range(len(age_list))]
-age_map = {str(i + 1): lbl for i, lbl in enumerate(age_list)}
+    stethoscope_svg = (
+        '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1E40AF" '
+        'stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 14px;">'
+        '<path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/>'
+        '<path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/>'
+        '<circle cx="20" cy="10" r="2"/>'
+        '</svg>'
+    )
+    speaker_svg = (
+        '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" '
+        'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
+        '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>'
+        '<path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>'
+        '<path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>'
+        '</svg>'
+    )
+    stop_svg = (
+        '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" '
+        'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
+        '<rect x="6" y="6" width="12" height="12" rx="2"/>'
+        '</svg>'
+    )
 
-health_list = health_labels()
-health_values = [str(i + 1) for i in range(len(health_list))]
-health_map = {str(i + 1): lbl for i, lbl in enumerate(health_list)}
-
-
-def get_idx(options, val, default_idx=0):
-    return options.index(val) if val in options else default_idx
-
-
-# Stepper Header
-step_pct = int((step / float(TOTAL_STEPS)) * 100)
-st.markdown(f"""
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
-    <div>
-        <h2 style="margin:0;font-size:1.75rem;font-weight:800;color:#142D4E;">
-            {tr("Khảo sát Nguy cơ Tiểu đường", "Diabetes Risk Assessment")}
-        </h2>
-        <div style="font-size:0.92rem;color:#5B6B82;margin-top:2px;">
-            {tr("Trả lời lần lượt từng câu hỏi ngắn để mô hình đánh giá hồ sơ của bạn.", "Answer each brief question one step at a time to generate your assessment.")}
-        </div>
+    doctor_iframe_template = '''<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    overflow: hidden;
+  }
+  .hero-doctor-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 6px 4px 4px 4px;
+  }
+  .doctor-speech-bubble {
+    background: #F0F7FF;
+    border: 1.5px solid #BFDBFE;
+    border-radius: 16px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+    position: relative;
+    width: 100%;
+    max-width: 330px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    animation: bubbleFloat 3.2s ease-in-out infinite;
+  }
+  .doctor-speech-bubble:hover {
+    transform: translateY(-2px);
+    border-color: #93C5FD;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.16);
+  }
+  .doctor-speech-bubble.is-speaking {
+    border-color: #2563EB;
+    background: #EFF6FF;
+  }
+  .doctor-speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px 7px 0;
+    border-style: solid;
+    border-color: #BFDBFE transparent transparent transparent;
+  }
+  @keyframes bubbleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  .bubble-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .bubble-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #1E40AF;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .bubble-sound-btn {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #1D4ED8;
+    background: #FFFFFF;
+    border: 1px solid #BFDBFE;
+    border-radius: 10px;
+    padding: 3px 9px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .bubble-sound-btn:hover {
+    background: #DBEAFE;
+  }
+  .bubble-text {
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.44;
+    color: #1E3A8A;
+    margin: 0;
+    font-style: italic;
+  }
+  .hero-doctor-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .hero-doctor-img {
+    width: 100%;
+    max-width: 315px;
+    height: auto;
+    max-height: 365px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 22px;
+    display: block;
+    box-shadow: 0 10px 28px rgba(15, 40, 84, 0.12);
+  }
+</style>
+</head>
+<body>
+<div class="hero-doctor-container">
+  <div class="doctor-speech-bubble" id="heroDoctorBubble" onclick="toggleDoctorBubble()" title="__BUBBLE_HINT__">
+    <div class="bubble-header">
+      <span class="bubble-title">__STETHOSCOPE_SVG__<span>__BUBBLE_TITLE__</span></span>
+      <span class="bubble-sound-btn" id="bubbleSoundBtn">__SPEAKER_SVG__<span>__LISTEN_LBL__</span></span>
     </div>
-    <div>
-        <span style="font-size:0.86rem;font-weight:700;color:#1D4ED8;background:#EFF6FF;border:1px solid #BFDBFE;padding:6px 14px;border-radius:999px;">
-            {tr(f"Câu {step} / {TOTAL_STEPS}", f"Question {step} of {TOTAL_STEPS}")}
-        </span>
-    </div>
+    <p class="bubble-text">“__SPEECH_SCRIPT__”</p>
+  </div>
+  <div class="hero-doctor-wrap">
+    __DOCTOR_IMG_TAG__
+  </div>
 </div>
-<div style="width:100%;height:7px;background:#E2E8F0;border-radius:999px;overflow:hidden;margin-bottom:1.6rem;">
-    <div style="width:{step_pct}%;height:100%;background:#2563EB;border-radius:999px;transition:width 0.25s ease;"></div>
-</div>
-""", unsafe_allow_html=True)
 
-with st.form(f"step_{step}"):
-    # =======================================================
-    # QUESTION 1: AGE GROUP
-    # =======================================================
-    if step == 1:
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;color:#1D4ED8;font-size:1.08rem;font-weight:700;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1D4ED8" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
-            <span>{tr("1. Bạn thuộc nhóm tuổi nào? *", "1. Which age group are you in? *")}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(tr("Chọn khoảng tuổi hiện tại của bạn theo phân nhóm điều tra.", "Select your current age range."))
+<script>
+  const SCRIPT_TEXT = __SCRIPT_JSON__;
+  const LANG_CODE = '__CUR_L__';
+  const LISTEN_HTML = `__SPEAKER_SVG__<span>__LISTEN_LBL__</span>`;
+  const STOP_HTML = `__STOP_SVG__<span>__STOP_LBL__</span>`;
+  let isSpeaking = false;
+  let hasPlayedInitial = false;
 
-        sel_age = st.selectbox(
-            tr("Nhóm tuổi", "Age Group"),
-            options=age_values,
-            index=get_idx(age_values, str(F.get("age", "5"))),
-            format_func=lambda v: age_map[v],
-            key="w_age",
-            label_visibility="collapsed",
-        )
+  function setSpeakingUI(active) {
+    isSpeaking = active;
+    const btn = document.getElementById('bubbleSoundBtn');
+    const bubble = document.getElementById('heroDoctorBubble');
+    if (btn) btn.innerHTML = active ? STOP_HTML : LISTEN_HTML;
+    if (bubble) {
+      if (active) bubble.classList.add('is-speaking');
+      else bubble.classList.remove('is-speaking');
+    }
+  }
 
-    # =======================================================
-    # QUESTION 2: HEIGHT & WEIGHT TOGETHER -> BMI
-    # =======================================================
-    elif step == 2:
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;color:#1D4ED8;font-size:1.08rem;font-weight:700;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1D4ED8" stroke-width="2"><path d="M12 3v18M5 7h14"/><path d="M5 7l-2 6a2.5 2.5 0 0 0 4 0L5 7zM19 7l-2 6a2.5 2.5 0 0 0 4 0L19 7z"/></svg>
-            <span>{tr("2. Chiều cao và Cân nặng của bạn *", "2. Your Height & Weight *")}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(tr("Ứng dụng sẽ tự động tính chỉ số khối cơ thể (BMI) khi bạn bấm Câu tiếp theo.", "Body Mass Index (BMI) is calculated automatically when you submit this step."))
+  function pickVoice(voices) {
+    if (!voices || !voices.length) return null;
+    if (LANG_CODE === 'vi') {
+      const viVoices = voices.filter(v => v.lang.toLowerCase().startsWith('vi'));
+      const isFemaleVi = (n) => (
+        n.includes('hoaimy') || n.includes('hoai my') || n.includes('female') ||
+        n.includes('linh') || n.includes('lan') || n.includes('mai') ||
+        n.includes('hoa') || n.includes('nu') ||
+        n.includes('standard-a') || n.includes('standard-c') ||
+        n.includes('wavenet-a') || n.includes('wavenet-c') || n.includes('neural2-a')
+      );
+      return viVoices.find(v => {
+        const n = v.name.toLowerCase().replace(/vietnam(ese)?/g, '');
+        return !isFemaleVi(n) && (
+          n.includes('namminh') || n.includes('nam minh') || n.includes('male') ||
+          n.includes('minh') || n.includes('hung') || n.includes('dung') ||
+          n.includes('tuan') || n.includes('hoang') || n.includes('duc') ||
+          /\ban\b/.test(n) ||
+          n.includes('standard-b') || n.includes('standard-d') ||
+          n.includes('wavenet-b') || n.includes('wavenet-d') || n.includes('neural2-d')
+        );
+      }) || viVoices.find(v => !isFemaleVi(v.name.toLowerCase().replace(/vietnam(ese)?/g, '')))
+        || viVoices[0] || null;
+    }
+    const enVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en'));
+    const isFemaleEn = (n) => (
+      n.includes('female') || n.includes('zira') || n.includes('jenny') ||
+      n.includes('samantha') || n.includes('aria') || n.includes('sara') ||
+      n.includes('hazel') || n.includes('susan') || n.includes('victoria') ||
+      n.includes('karen') || n.includes('moira') || n.includes('tessa')
+    );
+    return enVoices.find(v => {
+      const n = v.name.toLowerCase();
+      return !isFemaleEn(n) && (
+        n.includes('male') || n.includes('guy') || n.includes('david') ||
+        n.includes('mark') || n.includes('christopher') || n.includes('eric') ||
+        n.includes('andrew') || n.includes('brian') || n.includes('roger') ||
+        n.includes('steffan') || n.includes('george') || n.includes('ryan') ||
+        n.includes('daniel') || n.includes('alex') || n.includes('aaron') ||
+        n.includes('arthur') || n.includes('oliver') || n.includes('tom') ||
+        n.includes('standard-b') || n.includes('standard-d') ||
+        n.includes('standard-i') || n.includes('standard-j') ||
+        n.includes('wavenet-b') || n.includes('wavenet-d')
+      );
+    }) || enVoices.find(v => !isFemaleEn(v.name.toLowerCase()))
+      || enVoices[0] || null;
+  }
 
-        c_h, c_w = st.columns(2, gap="medium")
-        with c_h:
-            h_val = st.number_input(
-                tr("Chiều cao (cm)", "Height (cm)"),
-                min_value=100.0,
-                max_value=230.0,
-                value=float(F.get("height", 165.0)),
-                step=0.5,
-                key="w_height",
-            )
+  function startSpeech() {
+    if (!('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(SCRIPT_TEXT);
+      utterance.lang = LANG_CODE === 'vi' ? 'vi-VN' : 'en-US';
+      utterance.pitch = 0.92;
+      utterance.rate = 0.96;
+      const v = pickVoice(window.speechSynthesis.getVoices());
+      if (v) utterance.voice = v;
 
-        with c_w:
-            w_val = st.number_input(
-                tr("Cân nặng (kg)", "Weight (kg)"),
-                min_value=25.0,
-                max_value=250.0,
-                value=float(F.get("weight", 62.0)),
-                step=0.5,
-                key="w_weight",
-            )
+      utterance.onstart = () => {
+        hasPlayedInitial = true;
+        setSpeakingUI(true);
+      };
+      utterance.onend = () => setSpeakingUI(false);
+      utterance.onerror = () => setSpeakingUI(false);
 
-        bmi_preview = float(F.get("weight", 62.0)) / ((float(F.get("height", 165.0)) / 100.0) ** 2)
-        if bmi_preview < 18.5:
-            bmi_cat_lbl = tr("Thiếu cân", "Underweight")
-            bmi_color = "#3B82F6"
-        elif bmi_preview < 25.0:
-            bmi_cat_lbl = tr("Bình thường", "Normal")
-            bmi_color = "#16A34A"
-        elif bmi_preview < 30.0:
-            bmi_cat_lbl = tr("Thừa cân", "Overweight")
-            bmi_color = "#D97706"
-        else:
-            bmi_cat_lbl = tr("Béo phì", "Obese")
-            bmi_color = "#DC2626"
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      setSpeakingUI(false);
+    }
+  }
 
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:14px 20px;margin:14px 0 6px 0;">
-            <div style="display:inline-flex;align-items:center;gap:6px;font-size:0.95rem;color:#475569;line-height:1.2;">
-                <span>{tr("Chỉ số BMI hiện tại:", "Current BMI:")}</span>
-                <strong style="font-size:1.15rem;color:#142D4E;line-height:1.2;">{bmi_preview:.1f} kg/m²</strong>
+  function toggleDoctorBubble() {
+    if (!('speechSynthesis' in window)) return;
+    if (window.speechSynthesis.speaking || isSpeaking) {
+      window.speechSynthesis.cancel();
+      setSpeakingUI(false);
+    } else {
+      hasPlayedInitial = true;
+      startSpeech();
+    }
+  }
+
+  function unlockAndPlayOnce() {
+    if (hasPlayedInitial) return;
+    hasPlayedInitial = true;
+    startSpeech();
+    cleanupUnlockListeners();
+  }
+
+  function cleanupUnlockListeners() {
+    document.removeEventListener('pointerdown', unlockAndPlayOnce);
+    document.removeEventListener('keydown', unlockAndPlayOnce);
+    try {
+      if (window.parent && window.parent.document) {
+        window.parent.document.removeEventListener('pointerdown', unlockAndPlayOnce);
+        window.parent.document.removeEventListener('keydown', unlockAndPlayOnce);
+      }
+    } catch (e) {}
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      if (!hasPlayedInitial) startSpeech();
+    };
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(startSpeech, 250);
+    document.addEventListener('pointerdown', unlockAndPlayOnce, { once: true });
+    document.addEventListener('keydown', unlockAndPlayOnce, { once: true });
+    try {
+      if (window.parent && window.parent.document) {
+        window.parent.document.addEventListener('pointerdown', unlockAndPlayOnce, { once: true });
+        window.parent.document.addEventListener('keydown', unlockAndPlayOnce, { once: true });
+      }
+    } catch (e) {}
+  });
+</script>
+</body>
+</html>'''
+
+    doctor_iframe_html = (
+        doctor_iframe_template
+        .replace("__BUBBLE_HINT__", bubble_hint)
+        .replace("__STETHOSCOPE_SVG__", stethoscope_svg)
+        .replace("__BUBBLE_TITLE__", bubble_title)
+        .replace("__SPEAKER_SVG__", speaker_svg)
+        .replace("__LISTEN_LBL__", listen_lbl)
+        .replace("__STOP_SVG__", stop_svg)
+        .replace("__STOP_LBL__", stop_lbl)
+        .replace("__SPEECH_SCRIPT__", speech_script)
+        .replace("__DOCTOR_IMG_TAG__", doctor_img_tag)
+        .replace("__SCRIPT_JSON__", script_json)
+        .replace("__CUR_L__", cur_l)
+    )
+
+    with st.container(key="home_hero"):
+        c_hero_l, c_hero_r = st.columns([1.25, 0.95], vertical_alignment="center", gap="large")
+
+        with c_hero_l:
+            html(f"""
+            <h1 class="brand-title">GlucoGuide</h1>
+            <div class="brand-subtitle">
+                {tr("Thấu hiểu Nguy cơ. Chủ động Bảo vệ Sức khỏe.", "Know Your Risk. Take Control of Your Health.")}
             </div>
-            <span style="display:inline-flex;align-items:center;background:{bmi_color};color:#fff;font-size:0.82rem;font-weight:700;padding:5px 14px;border-radius:999px;line-height:1.2;">
-                {bmi_cat_lbl}
-            </span>
-        </div>
-        """, unsafe_allow_html=True)
+            <div class="brand-lead">
+                {tr(
+                    "Công cụ sàng lọc nguy cơ tiểu đường thông minh, giúp bạn hiểu rõ các yếu tố sức khỏe và đưa ra quyết định chăm sóc sức khỏe chủ động.",
+                    "A smart diabetes risk screening tool designed to help you understand your health factors and make proactive health decisions."
+                )}
+            </div>
+            """)
 
-    # =======================================================
-    # QUESTION 3: HIGH BLOOD PRESSURE
-    # =======================================================
-    elif step == 3:
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;color:#1D4ED8;font-size:1.08rem;font-weight:700;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1D4ED8" stroke-width="2"><path d="M22 12h-4l-3 7-4-14-3 7H2"/></svg>
-            <span>{tr("3. Bạn đã từng được bác sĩ thông báo bị Tăng huyết áp chưa? *", "3. Have you ever been told by a doctor that you have High Blood Pressure? *")}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(tr("Không tính tăng huyết áp chỉ khi mang thai hoặc ở mức ranh giới nhẹ.", "Exclude pregnancy-related or borderline readings."))
+            if st.button(tr("Bắt đầu Đánh giá Nguy cơ", "Start Risk Assessment"), type="primary"):
+                st.session_state["assess_step"] = 1
+                st.switch_page("pages/1_Risk_Assessment.py")
 
-        bp_choice = st.radio(
-            tr("Huyết áp cao", "High Blood Pressure"),
-            options=["no", "yes", "unknown"],
-            index=get_idx(["no", "yes", "unknown"], F.get("bp", "no")),
-            format_func=lambda v: UNKNOWN_MAP[v],
-            horizontal=True,
-            key="w_bp",
-            label_visibility="collapsed",
-        )
-
-    # =======================================================
-    # QUESTION 4: HIGH CHOLESTEROL
-    # =======================================================
-    elif step == 4:
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;color:#1D4ED8;font-size:1.08rem;font-weight:700;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1D4ED8" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-            <span>{tr("4. Bạn đã từng được thông báo có chỉ số Mỡ máu (Cholesterol) cao chưa? *", "4. Have you ever been told that your Blood Cholesterol is high? *")}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(tr("Chọn 'Không rõ' nếu bạn chưa từng xét nghiệm mỡ máu.", "Select 'Unknown' if you have never been tested."))
-
-        chol_choice = st.radio(
-            tr("Mỡ máu cao", "High Cholesterol"),
-            options=["no", "yes", "unknown"],
-            index=get_idx(["no", "yes", "unknown"], F.get("chol", "no")),
-            format_func=lambda v: UNKNOWN_MAP[v],
-            horizontal=True,
-            key="w_chol",
-            label_visibility="collapsed",
-        )
-
-    # =======================================================
-    # QUESTION 5: GENERAL HEALTH
-    # =======================================================
-    elif step == 5:
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;color:#1D4ED8;font-size:1.08rem;font-weight:700;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1D4ED8" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-            <span>{tr("5. Bạn tự đánh giá sức khỏe tổng quát của mình ở mức nào? *", "5. How would you rate your General Health overall? *")}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(tr("Đánh giá cảm nhận chung về thể trạng hiện tại của bạn.", "Your perceived current overall health."))
-
-        health_choice = st.radio(
-            tr("Sức khỏe tổng quát", "General Health"),
-            options=health_values,
-            index=get_idx(health_values, str(F.get("health", "2")), 1),
-            format_func=lambda v: health_map[v],
-            horizontal=True,
-            key="w_health",
-            label_visibility="collapsed",
-        )
-
-    # =======================================================
-    # QUESTION 6: SMOKER
-    # =======================================================
-    elif step == 6:
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;color:#1D4ED8;font-size:1.08rem;font-weight:700;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1D4ED8" stroke-width="2"><path d="M18 12H2v4h16"/><path d="M22 12v4"/><path d="M18 8c0-2-2-2-2-4"/></svg>
-            <span>{tr("6. Bạn đã từng hút ít nhất 100 điếu thuốc lá trong đời chưa? *", "6. Have you smoked at least 100 cigarettes in your entire life? *")}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(tr("Tính cộng dồn khoảng 5 bao thuốc trong suốt cuộc đời, không cần đang hút hiện tại.", "Approximately 5 packs across your lifetime."))
-
-        smoker_choice = st.radio(
-            tr("Hút thuốc", "Smoker"),
-            options=["no", "yes"],
-            index=get_idx(["no", "yes"], F.get("smoker", "no")),
-            format_func=lambda v: YES_NO_MAP[v],
-            horizontal=True,
-            key="w_smoker",
-            label_visibility="collapsed",
-        )
-
-    # =======================================================
-    # QUESTION 7: PHYSICAL ACTIVITY
-    # =======================================================
-    elif step == 7:
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;color:#1D4ED8;font-size:1.08rem;font-weight:700;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1D4ED8" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>{tr("7. Trong 30 ngày qua, bạn có vận động thể chất ngoài công việc chính không? *", "7. Have you done physical activity or exercise in the past 30 days (other than your regular job)? *")}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(tr("Ví dụ: đi bộ tập thể dục, chạy bộ, đạp xe, bơi lội hoặc thể thao.", "Such as walking, running, cycling, swimming, or sports."))
-
-        activity_choice = st.radio(
-            tr("Vận động thể chất", "Physical Activity"),
-            options=["yes", "no"],
-            index=get_idx(["yes", "no"], F.get("activity", "yes")),
-            format_func=lambda v: YES_NO_MAP[v],
-            horizontal=True,
-            key="w_activity",
-            label_visibility="collapsed",
-        )
-
-    # =======================================================
-    # QUESTION 8: DIFFICULTY WALKING
-    # =======================================================
-    elif step == 8:
-        st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;color:#1D4ED8;font-size:1.08rem;font-weight:700;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1D4ED8" stroke-width="2"><circle cx="12" cy="4" r="2"/><path d="M15 22v-5l-3-3 1-5 3 2h3"/><path d="M9 14l-2 8"/><path d="M9 9l3-1"/></svg>
-            <span>{tr("8. Bạn có gặp khó khăn nghiêm trọng khi đi bộ hoặc leo cầu thang không? *", "8. Do you have serious difficulty walking or climbing stairs? *")}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(tr("Khó khăn đáng kể về vận động chi dưới theo tình trạng hiện tại.", "Mobility limitations affecting walking or stair climbing."))
-
-        walk_choice = st.radio(
-            tr("Khó khăn đi bộ", "Difficulty Walking"),
-            options=["no", "yes"],
-            index=get_idx(["no", "yes"], F.get("walk", "no")),
-            format_func=lambda v: YES_NO_MAP[v],
-            horizontal=True,
-            key="w_walk",
-            label_visibility="collapsed",
-        )
+        with c_hero_r:
+            components.html(doctor_iframe_html, height=495, scrolling=False)
 
     st.write("")
-    col_prev, col_next = st.columns([1, 1.2], gap="medium")
 
-    prev_clicked = False
-    with col_prev:
-        if step > 1:
-            prev_clicked = st.form_submit_button(
-                tr("← Câu trước", "← Previous"),
-                use_container_width=True,
-            )
-
-    with col_next:
-        if step < TOTAL_STEPS:
-            next_clicked = st.form_submit_button(
-                tr("Câu tiếp theo →", "Next Question →"),
-                type="primary",
-                use_container_width=True,
-            )
-            submit_clicked = False
-        else:
-            next_clicked = False
-            submit_clicked = st.form_submit_button(
-                tr("Hoàn tất & Xem Kết quả →", "Complete & Assess Risk →"),
-                type="primary",
-                use_container_width=True,
-            )
-
-
-# =======================================================
-# HANDLE FORM SUBMISSION OUTSIDE WITH BLOCK
-# =======================================================
-def save_current_step():
-    if step == 1:
-        F["age"] = sel_age
-    elif step == 2:
-        F["height"] = h_val
-        F["weight"] = w_val
-        F["bmi"] = float(w_val) / ((float(h_val) / 100.0) ** 2)
-    elif step == 3:
-        F["bp"] = bp_choice
-    elif step == 4:
-        F["chol"] = chol_choice
-    elif step == 5:
-        F["health"] = health_choice
-    elif step == 6:
-        F["smoker"] = smoker_choice
-    elif step == 7:
-        F["activity"] = activity_choice
-    elif step == 8:
-        F["walk"] = walk_choice
+    # How It Works 3-Step Banner (matching Image 1)
+    with st.container(key="how_card"):
+        html(f"""
+        <div class="how-layout">
+            <div class="how-shield-box">{SHIELD_PLUS_SVG}</div>
+            <div>
+                <div class="how-title">{tr("Quy trình Hoạt động?", "How It Works?")}</div>
+                <div class="how-steps">
+                    <div class="how-step-box">
+                        <div class="flow-num-badge">1</div>
+                        <div class="how-step-txt">{tr("Trả lời vài câu hỏi đơn giản", "Answer a few simple questions")}</div>
+                    </div>
+                    <div class="how-arrow"><span class="flow-ch-1">›</span><span class="flow-ch-2">›</span><span class="flow-ch-3">›</span></div>
+                    <div class="how-step-box">
+                        <div class="flow-num-badge">2</div>
+                        <div class="how-step-txt">{tr("Nhận kết quả nguy cơ của bạn", "Get your risk result")}</div>
+                    </div>
+                    <div class="how-arrow"><span class="flow-ch-1">›</span><span class="flow-ch-2">›</span><span class="flow-ch-3">›</span></div>
+                    <div class="how-step-box">
+                        <div class="flow-num-badge">3</div>
+                        <div class="how-step-txt">{tr("Tìm hiểu thêm cùng Trợ lý AI", "Learn more with our AI Assistant")}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """)
 
 
-if prev_clicked:
-    save_current_step()
-    S["assess_step"] = step - 1
-    st.rerun()
+# Determine Mode before building navigation
+mode = st.session_state.get("app_mode", "user")
 
-elif next_clicked:
-    save_current_step()
-    if step == 2 and not (12.0 <= F["bmi"] <= 98.0):
-        st.warning(tr(
-            f"Chỉ số BMI tính được là {F['bmi']:.1f} kg/m², nằm ngoài phạm vi hợp lệ của mô hình (12.0 – 98.0). Vui lòng kiểm tra lại chiều cao và cân nặng.",
-            f"Calculated BMI ({F['bmi']:.1f} kg/m²) is outside the supported model range (12.0 – 98.0). Please check your height and weight."
-        ))
-    else:
-        S["assess_step"] = step + 1
-        st.rerun()
+home_title = tr("Trang chủ", "Home")
+assess_title = tr("Khảo sát Nguy cơ", "Risk Assessment")
+results_title = tr("Kết quả của tôi", "My Results")
+about_title = tr("Về GlucoGuide", "About GlucoGuide")
+teacher_title = tr("Tổng quan Dự án", "Project Overview")
 
-elif submit_clicked:
-    save_current_step()
-    bmi_final = float(F.get("weight", 62.0)) / ((float(F.get("height", 165.0)) / 100.0) ** 2)
-    bp_in = F.get("bp", "no")
-    chol_in = F.get("chol", "no")
+home_page = st.Page(
+    home_view,
+    title=home_title,
+    default=(mode == "user"),
+)
+assess_page = st.Page(
+    "pages/1_Risk_Assessment.py",
+    title=assess_title,
+)
+results_page = st.Page(
+    "pages/2_My_Results.py",
+    title=results_title,
+)
+about_page = st.Page(
+    "pages/3_About_GlucoGuide.py",
+    title=about_title,
+)
+teacher_page = st.Page(
+    "pages/4_Teacher_Overview.py",
+    title=teacher_title,
+    default=(mode == "teacher"),
+)
 
-    answers = {
-        "Age": int(F.get("age", 5)),
-        "BMI": float(bmi_final),
-        "HighBP": int(bp_in == "yes") if bp_in != "unknown" else float("nan"),
-        "HighChol": int(chol_in == "yes") if chol_in != "unknown" else float("nan"),
-        "GenHlth": int(F.get("health", 2)),
-        "Smoker": int(F.get("smoker", "no") == "yes"),
-        "PhysActivity": int(F.get("activity", "yes") == "yes"),
-        "DiffWalk": int(F.get("walk", "no") == "yes"),
-    }
+if mode == "user":
+    nav_items = [
+        ("nav_home", home_title, home_page),
+        ("nav_assess", assess_title, assess_page),
+        ("nav_results", results_title, results_page),
+        ("nav_about", about_title, about_page),
+    ]
+else:
+    nav_items = [
+        ("nav_teacher", teacher_title, teacher_page),
+    ]
 
-    with st.spinner(tr("Mô hình đang tính toán xác suất phân loại...", "Generating screening assessment...")):
-        try:
-            prob = predict(answers)
-            S["answers"] = answers
-            S["probability"] = prob
-            S["assess_step"] = 1
-            st.switch_page("pages/2_My_Results.py")
-        except Exception as e:
-            st.error(f"{tr('Lỗi tính toán:', 'Calculation error:')} {e}")
+pages = [p for _, _, p in nav_items]
+nav = st.navigation(pages, position="hidden")
+
+# ============ CUSTOM SIDEBAR (LOGO AT VERY TOP) ============
+cur_lang = st.session_state.get("lang", "vi")
+logo_markup = get_eiu_logo_bilingual_svg(cur_lang)
+
+with st.sidebar:
+    st.markdown(
+        f'''
+        <div class="sb-logo-wrap">
+            {logo_markup}
+        </div>
+        <div class="sb-brand-row">
+            {HEART_PULSE_SVG}
+            <div class="sb-brand-name">GlucoGuide</div>
+        </div>
+        ''',
+        unsafe_allow_html=True,
+    )
+
+    for slug, label, page_obj in nav_items:
+        state_cls = "active" if page_obj == nav else "idle"
+        with st.container(key=f"{slug}_{state_cls}"):
+            st.page_link(page_obj, label=label, use_container_width=True)
+
+    st.markdown('<div style="height:0.5rem;"></div>', unsafe_allow_html=True)
+    pick_language()
+
+    mode_lbl = tr("CHẾ ĐỘ", "MODE")
+    st.markdown(
+        f'<div class="sb-section-lbl">{mode_lbl}</div>',
+        unsafe_allow_html=True,
+    )
+    with st.container(key="sb_mode_seg"):
+        cur_mode = st.session_state.get("app_mode", "user")
+        selected_mode = st.radio(
+            "sb_mode_select_hidden",
+            options=["user", "teacher"],
+            format_func=lambda val: tr(
+                "Người dùng" if val == "user" else "Giảng viên",
+                "User" if val == "user" else "Teacher",
+            ),
+            index=0 if cur_mode == "user" else 1,
+            horizontal=True,
+            key="sb_mode_radio",
+            label_visibility="collapsed",
+        )
+        if selected_mode != cur_mode:
+            st.session_state["app_mode"] = selected_mode
+            st.rerun()
+
+    st.markdown(
+        f"""
+        <div class="sb-note">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#93C5FD" stroke-width="2" style="flex:0 0 16px;margin-top:2px">
+                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            <span>{tr(
+                "Công cụ phục vụ mục đích giáo dục, không dùng trong chẩn đoán lâm sàng.",
+                "Educational tool, not for clinical diagnosis."
+            )}</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+nav.run()
