@@ -6,6 +6,7 @@
   - Nguyễn Thị Yến Nhi
   - Đỗ Nguyễn Minh Thư
   - Lê Hoàng Lâm
+    
 **Built with:** Python · scikit-learn · Streamlit · Plotly
 
 > **Educational project — not for clinical use.** GlucoGuide is a classroom decision-support demonstration. It classifies patterns associated with a self-reported diabetes/prediabetes label in the CDC BRFSS 2015 survey. It is not a diagnostic test, does not identify undiagnosed diabetes, does not predict future disease onset, and must not be used to make clinical or treatment decisions.
