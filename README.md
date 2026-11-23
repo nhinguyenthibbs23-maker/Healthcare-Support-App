@@ -6,7 +6,9 @@
   - Nguyễn Thị Yến Nhi
   - Đỗ Nguyễn Minh Thư
   - Lê Hoàng Lâm
+    
 **App link:** https://healthcare-support-app-qsw9qo27b8ozxvlvedjsae.streamlit.app/ 
+**Video link:** 
     
 **Built with:** Python · scikit-learn · Streamlit · Plotly
 
