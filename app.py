@@ -40,6 +40,7 @@ def home_view():
         "Hello! Spend 2 minutes with me to assess your risk and proactively protect your health against diabetes!"
     )
     bubble_title = tr("Bác sĩ Nguyễn Hoài Đức", "Dr. Nguyen Hoai Duc")
+    bubble_hint = tr("Bấm để nghe bác sĩ nói", "Click to hear doctor speak")
     listen_lbl = tr("Nghe nói", "Listen")
     stop_lbl = tr("Dừng", "Stop")
     script_json = json.dumps(speech_script)
@@ -73,27 +74,415 @@ def home_view():
         '</svg>'
     )
 
-    doctor_iframe_html = f'''<!DOCTYPE html>
+    doctor_iframe_template = '''<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-  * {{ box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }}
-  html, body {{
+  * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+  html, body {
     margin: 0;
     padding: 0;
     background: transparent;
     overflow: hidden;
-  }}
-  .hero-doctor-container {{
+  }
+  .hero-doctor-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
     padding: 6px 4px 4px 4px;
-  }}
-  .doctor-speech-bubble {{
+  }
+  .doctor-speech-bubble {
     background: #F0F7FF;
     border: 1.5px solid #BFDBFE;
+    border-radius: 16px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+    position: relative;
+    width: 100%;
+    max-width: 330px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    animation: bubbleFloat 3.2s ease-in-out infinite;
+  }
+  .doctor-speech-bubble:hover {
+    transform: translateY(-2px);
+    border-color: #93C5FD;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.16);
+  }
+  .doctor-speech-bubble.is-speaking {
+    border-color: #2563EB;
+    background: #EFF6FF;
+  }
+  .doctor-speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px 7px 0;
+    border-style: solid;
+    border-color: #BFDBFE transparent transparent transparent;
+  }
+  @keyframes bubbleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  .bubble-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .bubble-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #1E40AF;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .bubble-sound-btn {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #1D4ED8;
+    background: #FFFFFF;
+    border: 1px solid #BFDBFE;
+    border-radius: 10px;
+    padding: 3px 9px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .bubble-sound-btn:hover {
+    background: #DBEAFE;
+  }
+  .bubble-text {
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.44;
+    color: #1E3A8A;
+    margin: 0;
+    font-style: italic;
+  }
+  .hero-doctor-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .hero-doctor-img {
+    width: 100%;
+    max-width: 315px;
+    height: auto;
+    max-height: 365px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 22px;
+    display: block;
+    box-shadow: 0 10px 28px rgba(15, 40, 84, 0.12);
+  }
+</style>
+</head>
+<body>
+<div class="hero-doctor-container">
+  <div class="doctor-speech-bubble" id="heroDoctorBubble" onclick="toggleDoctorBubble()" title="__BUBBLE_HINT__">
+    <div class="bubble-header">
+      <span class="bubble-title">__STETHOSCOPE_SVG__<span>__BUBBLE_TITLE__</span></span>
+      <span class="bubble-sound-btn" id="bubbleSoundBtn">__SPEAKER_SVG__<span>__LISTEN_LBL__</span></span>
+    </div>
+    <p class="bubble-text">“__SPEECH_SCRIPT__”</p>
+  </div>
+  <div class="hero-doctor-wrap">
+    __DOCTOR_IMG_TAG__
+  </div>
+</div>
+
+<script>
+  const SCRIPT_TEXT = __SCRIPT_JSON__;
+  const LANG_CODE = '__CUR_L__';
+  const LISTEN_HTML = `__SPEAKER_SVG__<span>__LISTEN_LBL__</span>`;
+  const STOP_HTML = `__STOP_SVG__<span>__STOP_LBL__</span>`;
+  let isSpeaking = false;
+  let hasPlayedInitial = false;
+
+  function setSpeakingUI(active) {
+    isSpeaking = active;
+    const btn = document.getElementById('bubbleSoundBtn');
+    const bubble = document.getElementById('heroDoctorBubble');
+    if (btn) btn.innerHTML = active ? STOP_HTML : LISTEN_HTML;
+    if (bubble) {
+      if (active) bubble.classList.add('is-speaking');
+      else bubble.classList.remove('is-speaking');
+    }
+  }
+
+  function pickVoice(voices) {
+    if (!voices || !voices.length) return null;
+    if (LANG_CODE === 'vi') {
+      const viVoices = voices.filter(v => v.lang.toLowerCase().startsWith('vi'));
+      const isFemaleVi = (n) => (
+        n.includes('hoaimy') || n.includes('hoai my') || n.includes('female') ||
+        n.includes('linh') || n.includes('lan') || n.includes('mai') ||
+        n.includes('hoa') || n.includes('nu') ||
+        n.includes('standard-a') || n.includes('standard-c') ||
+        n.includes('wavenet-a') || n.includes('wavenet-c') || n.includes('neural2-a')
+      );
+      return viVoices.find(v => {
+        const n = v.name.toLowerCase().replace(/vietnam(ese)?/g, '');
+        return !isFemaleVi(n) && (
+          n.includes('namminh') || n.includes('nam minh') || n.includes('male') ||
+          n.includes('minh') || n.includes('hung') || n.includes('dung') ||
+          n.includes('tuan') || n.includes('hoang') || n.includes('duc') ||
+          /\ban\b/.test(n) ||
+          n.includes('standard-b') || n.includes('standard-d') ||
+          n.includes('wavenet-b') || n.includes('wavenet-d') || n.includes('neural2-d')
+        );
+      }) || viVoices.find(v => !isFemaleVi(v.name.toLowerCase().replace(/vietnam(ese)?/g, '')))
+        || viVoices[0] || null;
+    }
+    const enVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en'));
+    const isFemaleEn = (n) => (
+      n.includes('female') || n.includes('zira') || n.includes('jenny') ||
+      n.includes('samantha') || n.includes('aria') || n.includes('sara') ||
+      n.includes('hazel') || n.includes('susan') || n.includes('victoria') ||
+      n.includes('karen') || n.includes('moira') || n.includes('tessa')
+    );
+    return enVoices.find(v => {
+      const n = v.name.toLowerCase();
+      return !isFemaleEn(n) && (
+        n.includes('male') || n.includes('guy') || n.includes('david') ||
+        n.includes('mark') || n.includes('christopher') || n.includes('eric') ||
+        n.includes('andrew') || n.includes('brian') || n.includes('roger') ||
+        n.includes('steffan') || n.includes('george') || n.includes('ryan') ||
+        n.includes('daniel') || n.includes('alex') || n.includes('aaron') ||
+        n.includes('arthur') || n.includes('oliver') || n.includes('tom') ||
+        n.includes('standard-b') || n.includes('standard-d') ||
+        n.includes('standard-i') || n.includes('standard-j') ||
+        n.includes('wavenet-b') || n.includes('wavenet-d')
+      );
+    }) || enVoices.find(v => !isFemaleEn(v.name.toLowerCase()))
+      || enVoices[0] || null;
+  }
+
+  function startSpeech() {
+    if (!('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(SCRIPT_TEXT);
+      utterance.lang = LANG_CODE === 'vi' ? 'vi-VN' : 'en-US';
+      utterance.pitch = 0.92;
+      utterance.rate = 0.96;
+      const v = pickVoice(window.speechSynthesis.getVoices());
+      if (v) utterance.voice = v;
+
+      utterance.onstart = () => {
+        hasPlayedInitial = true;
+        setSpeakingUI(true);
+      };
+      utterance.onend = () => setSpeakingUI(false);
+      utterance.onerror = () => setSpeakingUI(false);
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      setSpeakingUI(false);
+    }
+  }
+
+  function toggleDoctorBubble() {
+    if (!('speechSynthesis' in window)) return;
+    if (window.speechSynthesis.speaking || isSpeaking) {
+      window.speechSynthesis.cancel();
+      setSpeakingUI(false);
+    } else {
+      hasPlayedInitial = true;
+      startSpeech();
+    }
+  }
+
+  function unlockAndPlayOnce() {
+    if (hasPlayedInitial) return;
+    hasPlayedInitial = true;
+    startSpeech();
+    cleanupUnlockListeners();
+  }
+
+  function cleanupUnlockListeners() {
+    document.removeEventListener('pointerdown', unlockAndPlayOnce);
+    document.removeEventListener('keydown', unlockAndPlayOnce);
+    try {
+      if (window.parent && window.parent.document) {
+        window.parent.document.removeEventListener('pointerdown', unlockAndPlayOnce);
+        window.parent.document.removeEventListener('keydown', unlockAndPlayOnce);
+      }
+    } catch (e) {}
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      if (!hasPlayedInitial) startSpeech();
+    };
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(startSpeech, 250);
+    document.addEventListener('pointerdown', unlockAndPlayOnce, { once: true });
+    document.addEventListener('keydown', unlockAndPlayOnce, { once: true });
+    try {
+      if (window.parent && window.parent.document) {
+        window.parent.document.addEventListener('pointerdown', unlockAndPlayOnce, { once: true });
+        window.parent.document.addEventListener('keydown', unlockAndPlayOnce, { once: true });
+      }
+    } catch (e) {}
+  });
+</script>
+</body>
+</html>'''
+
+    doctor_iframe_html = (
+        doctor_iframe_template
+        .replace("__BUBBLE_HINT__", bubble_hint)
+        .replace("__STETHOSCOPE_SVG__", stethoscope_svg)
+        .replace("__BUBBLE_TITLE__", bubble_title)
+        .replace("__SPEAKER_SVG__", speaker_svg)
+        .replace("__LISTEN_LBL__", listen_lbl)
+        .replace("__STOP_SVG__", stop_svg)
+        .replace("__STOP_LBL__", stop_lbl)
+        .replace("__SPEECH_SCRIPT__", speech_script)
+        .replace("__DOCTOR_IMG_TAG__", doctor_img_tag)
+        .replace("__SCRIPT_JSON__", script_json)
+        .replace("__CUR_L__", cur_l)
+    )
+
+    with st.container(key="home_hero"):
+        c_hero_l, c_hero_r = st.columns([1.25, 0.95], vertical_alignment="center", gap="large")
+
+        with c_hero_l:
+            html(f"""
+            <h1 class="brand-title">GlucoGuide</h1>
+            <div class="brand-subtitle">
+                {tr("Thấu hiểu Nguy cơ. Chủ động Bảo vệ Sức khỏe.", "Know Your Risk. Take Control of Your Health.")}
+            </div>
+            <div class="brand-lead">
+                {tr(
+                    "Công cụ sàng lọc nguy cơ tiểu đường thông minh, giúp bạn hiểu rõ các yếu tố sức khỏe và đưa ra quyết định chăm sóc sức khỏe chủ động.",
+                    "A smart diabetes risk screening tool designed to help you understand your health factors and make proactive health decisions."
+                )}
+            </div>
+            """)
+
+            if st.button(tr("Bắt đầu Đánh giá Nguy cơ", "Start Risk Assessment"), type="primary"):
+                st.session_state["assess_step"] = 1
+                st.switch_page("pages/1_Risk_Assessment.py")
+
+        with c_hero_r:
+            components.html(doctor_iframe_html, height=495, scrolling=False)
+
+    st.write("")
+
+    # How It Works 3-Step Banner (matching Image 1)
+    with st.container(key="how_card"):
+        html(f"""
+        <div class="how-layout">
+            <div class="how-shield-box">{SHIELD_PLUS_SVG}</div>
+            <div>
+                <div class="how-title">{tr("Quy trình Hoạt động?", "How It Works?")}</div>
+                <div class="how-steps">
+                    <div class="how-step-box">
+                        <div class="flow-num-badge">1</div>
+                        <div class="how-step-txt">{tr("Trả lời vài câu hỏi đơn giản", "Answer a few simple questions")}</div>
+                    </div>
+                    <div class="how-arrow"><span class="flow-ch-1">›</span><span class="flow-ch-2">›</span><span class="flow-ch-3">›</span></div>
+                    <div class="how-step-box">
+                        <div class="flow-num-badge">2</div>
+                        <div class="how-step-txt">{tr("Nhận kết quả nguy cơ của bạn", "Get your risk result")}</div>
+                    </div>
+                    <div class="how-arrow"><span class="flow-ch-1">›</span><span class="flow-ch-2">›</span><span class="flow-ch-3">›</span></div>
+                    <div class="how-step-box">
+                        <div class="flow-num-badge">3</div>
+                        <div class="how-step-txt">{tr("Tìm hiểu thêm cùng Trợ lý AI", "Learn more with our AI Assistant")}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """)
+
+
+# Determine Mode before building navigation
+mode = st.session_state.get("app_mode", "user")
+
+home_title = tr("Trang chủ", "Home")
+assess_title = tr("Khảo sát Nguy cơ", "Risk Assessment")
+results_title = tr("Kết quả của tôi", "My Results")
+about_title = tr("Về GlucoGuide", "About GlucoGuide")
+teacher_title = tr("Tổng quan Dự án", "Project Overview")
+
+home_page = st.Page(
+    home_view,
+    title=home_title,
+    default=(mode == "user"),
+)
+assess_page = st.Page(
+    "pages/1_Risk_Assessment.py",
+    title=assess_title,
+)
+results_page = st.Page(
+    "pages/2_My_Results.py",
+    title=results_title,
+)
+about_page = st.Page(
+    "pages/3_About_GlucoGuide.py",
+    title=about_title,
+)
+teacher_page = st.Page(
+    "pages/4_Teacher_Overview.py",
+    title=teacher_title,
+    default=(mode == "teacher"),
+)
+
+if mode == "user":
+    nav_items = [
+        ("nav_home", home_title, home_page),
+        ("nav_assess", assess_title, assess_page),
+        ("nav_results", results_title, results_page),
+        ("nav_about", about_title, about_page),
+    ]
+else:
+    nav_items = [
+        ("nav_teacher", teacher_title, teacher_page),
+    ]
+
+pages = [p for _, _, p in nav_items]
+nav = st.navigation(pages, position="hidden")
+
+# ============ CUSTOM SIDEBAR (LOGO AT VERY TOP) ============
+cur_lang = st.session_state.get("lang", "vi")
+logo_markup = get_eiu_logo_bilingual_svg(cur_lang)
+
+with st.sidebar:
+    st.markdown(
+        f'''
+        <div class="sb-logo-wrap">
+            {logo_markup}
+        </div>
+        <div class="sb-brand-row">
+            {HEART_PULSE_SVG}
+            <div class="sb-brand-name">GlucoGuide</div>
+        </div>
+        ''',
+        unsafe_allow_html=True,
+    )
+
+    for slug, label, page_obj in nav_items:
+        state_cls = "active" if page_obj == nav else "idle"
+        with st.container(key=f"{slug}_{state_cls}"):
+            st.page_link(page_obj, label=
