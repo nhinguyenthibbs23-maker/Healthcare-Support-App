@@ -1,45 +1,55 @@
-# AI Use Appendix — GlucoGuide
+# Appendix: Use of Artificial Intelligence (AI)
 
-## 1. AI tools used
+## 1. Purpose of AI Assistance
 
-The group used ChatGPT (OpenAI) as an AI-assisted development and writing tool during the development of GlucoGuide. The model/version shown for the current interaction was GPT-6. The group should check its chat history and add any other AI systems or model versions used by other members. The documented assistance took place during the project work, including 16–17 November 2026; group members should add any earlier or later dates from their own use.
+Artificial Intelligence (AI) tools were used as supporting tools during the development of GlucoGuide, an educational application for diabetes risk assessment. AI assistance was used for selected programming, feature modification, application development, documentation, and debugging tasks.
 
-## 2. How AI assistance was used
+AI-generated suggestions were treated as drafts and were adapted to the project's dataset, model structure, and application requirements. The final implementation and submitted work remain the responsibility of the project team.
 
-AI assistance was used for the following activities:
+## 2. Areas of AI Assistance
 
-- **Python and model-development support:** Helped review the supplied project code and model-training workflow, explain the Scikit-learn pipeline and model metadata, and identify inconsistencies between code, saved metadata, and project documentation.
+| Project Component | AI Assistance |
+|---|---|
+| Machine Learning Model | AI was used to assist with developing and modifying the machine learning code, including changing the model input from 5 features to 8 features to better align with the project's intended input variables. |
+| Model Pipeline and Data Processing | AI assisted with code related to data preprocessing, model integration, and the connection between the dataset and the trained model. |
+| Model Evaluation | AI was used to assist with interpreting model evaluation outputs and explaining performance metrics. |
+| Streamlit Application | AI assisted with developing and refining the Streamlit interface, including the organization of application pages and user-facing components. |
+| AI Assistant Feature | AI was used to assist with adding the AI Assistant functionality to GlucoGuide, including its integration into the application and related user interactions. |
+| Documentation | AI assisted with drafting and improving project documentation, explanations, and descriptions of the application's features. |
+| Debugging and Testing | AI was used to help identify potential coding errors, troubleshoot implementation issues, and suggest possible solutions during development. |
 
-- **Course model comparison, thresholds, and PCA:** Helped add and run a reproducible hyperparameter search covering the classification algorithms from the course, add per-model cost-selected thresholds and an instructor-facing adjustable threshold explorer, compare validation precision and recall, and create a PCA component comparison table. The group reviewed this workflow as part of the final rebuild; the final selection, validation threshold, and held-out test metrics are summarized in the README and `DECISION_LOG.md`. The four group members should verify and own this disclosure before submission.
+## 3. Human Review and Modification
 
-- **Streamlit application support:** Helped discuss the questionnaire flow and the use of `st.form` and `st.form_submit_button`, and draft an example form structure for collecting the five model inputs before submitting an assessment. Also provided guidance on organizing Streamlit pages, navigation, reusable components, and application structure.
+AI-generated code and suggestions were not considered automatically correct or suitable for the project. The team adapted the suggestions to the existing codebase and project requirements.
 
-- **UI/UX design and visual mockups:** Assisted in developing the visual direction for GlucoGuide, including its premium healthcare design style, colour palette, typography, sidebar navigation, cards, buttons, and page layouts. Generated visual design concepts and mockups for the Home, Risk Assessment, Results, Understanding Results, Health Tips, and About Model pages. Also suggested ways to maintain a consistent design system across the application.
+In particular, the modification from 5 to 8 input features required consideration of the relationship between the model's expected input variables and the application's data inputs. The AI Assistant functionality was also incorporated as an additional application feature rather than treated as a replacement for the machine learning model.
 
-- **User experience and interface planning:** Helped plan the user journey, questionnaire steps, information hierarchy, dashboard layout, and presentation of diabetes risk predictions. Provided recommendations for making the application more intuitive, accessible, visually consistent, and suitable for non-technical users.
+The team is responsible for reviewing the final implementation, understanding the code, and ensuring that the submitted application reflects the actual project design.
 
-- **Model documentation:** Helped review and draft explanations of the model, selected features, threshold, cost assumptions, evaluation metrics, Shapley-based explanations, intended use, and limitations for the README, decision log, and model card. Also suggested the structure and content of the About Model page to communicate the model's methodology, performance, explainability, and limitations.
+## 4. Model Evaluation and Data Leakage
 
-- **Project quality review:** Reviewed the supplied project archive and highlighted items for the group to verify, including dependency completeness, form implementation, BMI handling, repository cleanup, and end-to-end application testing.
+AI tools were used to assist with discussions and explanations related to model evaluation and machine learning implementation. However, the team remains responsible for ensuring that the evaluation procedure is appropriate.
 
-- **Writing and presentation support:** Helped improve the wording and structure of project documentation and explain technical concepts in Vietnamese so that group members could understand and discuss the implementation.
+The reported model metrics should be interpreted in the context of the dataset and the implemented evaluation procedure. The dataset is based on self-reported health information and is not equivalent to clinical diagnostic data.
 
-AI-generated suggestions, visual mockups, and drafts were treated as assistance, not as authoritative evidence or automatically validated implementation. The group remains responsible for deciding which suggestions to adopt and for checking all code, data, results, visual content, and statements before submission.
-## 3. Verification and limitations
+The model's performance does not establish clinical validity or guarantee accurate diabetes diagnosis.
 
-The supplied model metadata reports programmatically calculated evaluation metrics for the saved model. These values should be checked against the final saved model artifacts and regenerated if the group retrains the model. A code review or explanation provided by AI does not establish that the application has been fully tested.
+## 5. Responsible Use of AI
 
-Before submission, the group should:
+GlucoGuide is an educational and informational application. It is not intended to replace professional medical advice, diagnosis, or treatment.
 
-- Review the complete source code and be able to explain the main implementation and modeling decisions.
-- Run the tests and manually verify the complete Streamlit user journey in the final environment.
-- Check dataset variable definitions and encodings against the original dataset and CDC documentation.
-- Confirm that the final README, decision log, model card, application, and repository describe the same model, threshold, intended use, and limitations.
-- Verify all reported metrics against the final model artifacts.
-- Record any additional AI tools, model versions, dates, prompts, and uses that are not covered in this appendix.
+The AI Assistant provides general informational support and may generate inaccurate or incomplete responses. Users should not rely on its outputs as a substitute for consultation with qualified healthcare professionals.
 
-GlucoGuide uses a US-based, self-reported survey outcome and has not been clinically validated for diagnosis or for use with the Vietnamese population. AI assistance is not clinical review, clinical validation, or professional medical advice.
+## 6. Disclosure and Accountability
 
-## 5. Declaration status
+The project team acknowledges the use of AI tools during development. Each team member is responsible for understanding the code and functionality relevant to their contribution, including components developed with AI assistance.
 
-This appendix is a draft for group completion. It does not claim that every group member has independently verified the code or results, or that a healthcare professional has reviewed the application. The group should finalize this declaration only after the checks above have actually been completed.
+Before submission, the team should ensure that this appendix accurately reflects the AI tools used, the actual modifications made, and the work completed by each member.
+
+AI assistance does not replace the team's responsibility for the correctness, transparency, and academic integrity of the submitted project.
+
+**Project:** GlucoGuide  
+**Course:** [Insert Course Name]  
+**Institution:** [Insert Institution Name]  
+**AI Tools Used:** [Insert the actual AI tools used]  
+**Date(s) of Use:** [Insert the actual dates or period]
