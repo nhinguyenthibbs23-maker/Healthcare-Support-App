@@ -1,116 +1,236 @@
-# GlucoGuide: Nền tảng Sàng lọc Nguy cơ Đái tháo đường & Trợ lý Lâm sàng Thông minh
-*(GlucoGuide: Diabetes Risk Screening & Clinical Intelligence Platform)*
+# GlucoGuide — Healthcare Decision-Support App
 
-**Đồ án Môn học Khai phá Dữ liệu (Data Mining Course Project)**  
-**Đơn vị:** Trường Đại học Quốc tế Miền Đông (Eastern International University - EIU)  
-**Nhóm tác giả:** 4 thành viên  
+**Data Mining Course Project | Eastern International University (EIU)**  
+**Team:** 4 members  
+**Built with:** Python · scikit-learn · Streamlit · Plotly
 
-> **Tuyên bố y tế quan trọng:** Đây là dự án học thuật phục vụ mục đích giáo dục và nghiên cứu khoa học. Mô hình phân loại nhãn khảo sát tự báo cáo từ tập dữ liệu CDC BRFSS 2015. Công cụ **không có chức năng chẩn đoán y khoa**, không phát hiện bệnh chưa từng biết, không thay thế xét nghiệm máu lâm sàng và không dùng để ra quyết định điều trị y tế.
+> **Educational project — not for clinical use.** GlucoGuide is a classroom decision-support demonstration. It classifies patterns associated with a self-reported diabetes/prediabetes label in the CDC BRFSS 2015 survey. It is not a diagnostic test, does not identify undiagnosed diabetes, does not predict future disease onset, and must not be used to make clinical or treatment decisions.
 
----
+## 1. Problem and intended user
 
-## 1. Tổng quan Dự án & Kiến trúc Hai Chế độ (Dual Modes)
+### User-decision statement
 
-GlucoGuide cung cấp hai trải nghiệm người dùng hoàn toàn khác biệt trên cùng một hệ thống học máy cốt lõi:
+An adult exploring their health information uses GlucoGuide at home to review how their self-reported health profile compares with patterns in the BRFSS 2015 survey and to decide whether to discuss blood-glucose testing or preventive health questions with a qualified healthcare professional.
 
-### A. Chế độ Người dùng (User Mode)
-Giao diện đơn giản, thân thiện, dễ tiếp cận và tập trung vào trải nghiệm cá nhân hóa:
-1. **Trang chủ (Home):** Giới thiệu thương hiệu GlucoGuide, giải thích quy trình 3 bước, cam kết quyền riêng tư và nút bắt đầu khảo sát nổi bật.
-2. **Khảo sát Nguy cơ (Risk Assessment):** Bảng câu hỏi thu thập 8 đặc trưng của mô hình được thiết kế dạng **trắc nghiệm từng bước (Stepped Questionnaire - 3 bước)** kèm thanh tiến trình trực quan và bộ tính chỉ số BMI tự động.
-3. **Kết quả của tôi (My Results):**
-   - **Bảng kết quả cá nhân:** Vòng tròn xác suất dự báo, phân loại rủi ro (Dưới/Trên ngưỡng 0.1693), ý nghĩa kết quả, huy hiệu nhận diện yếu tố chính và biểu đồ thanh đóng góp của từng đặc trưng theo thuật toán **Exact Shapley Attribution**.
-   - **Trợ lý AI (AI Assistant):** Tích hợp trực tiếp song song (side-by-side). Sử dụng SDK chính thức `google-genai` với mô hình `gemini-2.5-flash` (hỗ trợ chế độ offline thông minh khi chưa có khóa API) để giải thích kết quả, phân tích yếu tố ảnh hưởng và đưa ra lời khuyên y tế dự phòng.
-4. **Giới thiệu (About GlucoGuide):** Trang thông tin thân thiện dành riêng cho người dùng phổ thông, giải thích cơ chế sàng lọc và tuyên bố trách nhiệm y tế.
+The app presents a model estimate and an educational interpretation. It does **not** determine whether someone has diabetes or whether a test is medically required. A clinician and appropriate laboratory tests are needed for diagnosis.
 
-### B. Chế độ Giảng viên (Teacher Mode)
-Được tổ chức trên **một trang duy nhất (Project Overview)** với **6 tab ngang** phục vụ công tác đánh giá và thẩm định học thuật:
-- **Tab 1 – Full Model Card:** Đầy đủ 13 phần theo chuẩn Mitchell et al. Model Cards, kèm nút tải tệp tài liệu Model Card HTML/In ấn chuyên nghiệp.
-- **Tab 2 – Model Performance:** Biểu đồ tương tác Plotly ROC Curve (AUC = 0.8195), Precision-Recall Curve (AP = 0.4175), Ma trận nhầm lẫn (Confusion Matrix 50.886 mẫu test) và Báo cáo phân loại chi tiết.
-- **Tab 3 – Explainability:** Phân tích tầm quan trọng toàn cục (Permutation Feature Importance), nghiên cứu đối sánh 7 thuật toán × 4 bộ đặc trưng (5, 8, 12, 21 biến), và giải thích Exact Shapley.
-- **Tab 4 – Cost & Threshold Simulator:** Bảng mô phỏng ngưỡng quyết định tương tác, cho phép điều chỉnh trọng số phạt $FP$ và $FN$ để kiểm chứng tác động tới ngưỡng cắt tối ưu và tổng thiệt hại kỳ vọng.
-- **Tab 5 – Methodology:** Toàn bộ quy trình nghiên cứu học máy 10 bước từ tiền xử lý, phân tầng tránh rò rỉ (`StratifiedGroupKFold`), kiểm định chéo đến triển khai.
-- **Tab 6 – Ethics & Limitations:** Phân tích đạo đức về sai số âm tính giả/dương tính giả, kiểm định phụ nhóm (Fairness by Age, Sex, Income, Education từ `fairness.csv`) và giới hạn dữ liệu khảo sát BRFSS.
+### What the project demonstrates
 
----
+The project focuses on the complete decision-support workflow—not simply maximizing a classification score:
 
-## 2. Thông số Kỹ thuật & Hiệu năng Đã Kiểm định
+- define the user, decision moment, and intended action;
+- use only inputs available at that moment;
+- build and evaluate a reproducible machine-learning pipeline;
+- explain model output and error trade-offs;
+- communicate uncertainty, limitations, and responsible use through an accessible interface.
 
-- **Tập dữ liệu nguồn:** CDC BRFSS 2015 (253.680 bản ghi, 21 biến khảo sát).
-- **Thuật toán triển khai:** Histogram Gradient Boosting (`HistGradientBoostingClassifier`).
-- **8 Đặc trưng đầu vào:** `Age`, `BMI`, `HighBP`, `HighChol`, `GenHlth`, `Smoker`, `PhysActivity`, `DiffWalk`.
-- **Ngưỡng phân loại mặc định:** `0.169330` (được tối ưu trên tập Validation với tỷ lệ phạt tương đối $FP = 1, FN = 5$).
-- **Kết quả đánh giá trên tập Kiểm tra độc lập cách ly (Held-out Test, N = 50.886):**
+## 2. Dataset
 
-| Chỉ số Đánh giá | Kết quả Nghiệm thu |
-| :--- | :---: |
-| **Quy mô tập Test** | 50.886 bản ghi (7.064 ca dương tính) |
-| **ROC-AUC** | **0.8195** |
-| **Average Precision (PR-AUC)** | **0.4175** |
-| **Brier Score** | **0.0981** |
-| **Độ nhạy (Recall at Threshold 0.1693)** | **70.92%** (`0.7092`) |
-| **Độ chuẩn xác (Precision at Threshold)** | **32.76%** (`0.3276`) |
-| **F1-Score** | **0.4482** |
-| **Ma trận Nhầm lẫn (Confusion Matrix)** | $TN = 33.539, FP = 10.283, FN = 2.054, TP = 5.010$ |
+GlucoGuide uses the **Diabetes Health Indicators / CDC BRFSS 2015** dataset.
 
----
+- **Source:** [Kaggle dataset](https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset)
+- **Original survey:** [CDC BRFSS 2015](https://www.cdc.gov/brfss/annual_data/annual_2015.html)
+- **Codebook:** [2015 BRFSS Codebook](https://www.cdc.gov/brfss/annual_data/2015/pdf/CODEBOOK15_LLCP.pdf)
+- **Dataset size:** 253,680 survey records; 21 original columns
+- **Target:** `Diabetes_binary`
+  - `0`: respondent did not report diabetes or prediabetes
+  - `1`: respondent reported diabetes or prediabetes
 
-## 3. Hướng dẫn Cài đặt & Chạy Ứng dụng Cục bộ (Local Run)
+The outcome is self-reported and includes respondents with a previous diagnosis. Therefore, it is not a ground-truth label for undiagnosed disease or a clinical diagnosis.
 
-### Bước 1: Chuẩn bị Môi trường Python
-Khuyến nghị sử dụng Python 3.11 – 3.13:
-```bash
-python -m venv venv
-# Kích hoạt môi trường ảo:
-# Trên Windows:
-.\venv\Scripts\activate
-# Trên macOS / Linux:
-source venv/bin/activate
+### Model inputs
+
+The deployed model uses eight questionnaire features:
+
+| Feature | Meaning in the app |
+|---|---|
+| `Age` | BRFSS age category |
+| `BMI` | Body Mass Index calculated from entered height and weight |
+| `HighBP` | Self-reported high blood pressure |
+| `HighChol` | Self-reported high cholesterol |
+| `GenHlth` | Self-rated general health |
+| `Smoker` | Smoking-history indicator as defined by the source data |
+| `PhysActivity` | Physical-activity indicator |
+| `DiffWalk` | Difficulty walking or climbing stairs |
+
+The application converts the questionnaire answers into the model's expected encoded values. The original BRFSS feature definitions and category encodings should be consulted when interpreting these variables.
+
+## 3. Model and evaluation
+
+### Final model
+
+- **Estimator:** Histogram Gradient Boosting Classifier
+- **Feature set:** 8 inputs
+- **Saved artifact:** `models/pipeline.joblib`
+- **Metadata:** `models/model_meta.json`
+- **Default classification threshold:** `0.169330`
+- **Threshold selection assumption:** validation-set cost ratio of FP = 1 and FN = 5, in illustrative relative units—not actual monetary or medical costs.
+
+The training workflow compared course-relevant classification models and feature sets. Model selection used grouped cross-validation and validation data. The selected pipeline was refitted on the training partition, the operating threshold was selected on the validation partition, and final performance was measured on a held-out test set.
+
+### Held-out test performance
+
+The following metrics are reported by the saved model metadata for the test set (`n = 50,886`; positive labels = 7,064):
+
+| Metric | Result |
+|---|---:|
+| ROC-AUC | 0.8195 |
+| Average Precision (PR-AUC) | 0.4175 |
+| Brier score | 0.0981 |
+| Precision at selected threshold | 0.3276 |
+| Recall at selected threshold | 0.7092 |
+| F1-score | 0.4482 |
+
+**Confusion matrix at the selected threshold**
+
+| | Predicted negative | Predicted positive |
+|---|---:|---:|
+| Actual negative | TN = 33,539 | FP = 10,283 |
+| Actual positive | FN = 2,054 | TP = 5,010 |
+
+These results describe retrospective classification of survey labels. They do not establish clinical accuracy, effectiveness, or suitability for individual patient care. The positive class is relatively uncommon, so precision, recall, PR-AUC, calibration, and the consequences of false predictions are important alongside ROC-AUC.
+
+### Data splitting and leakage checks
+
+The source dataset does not provide a respondent identifier suitable for a true person-level split. The project therefore groups records by their complete original 21-feature profile and keeps each profile within one partition, using a stratified approximately 60/20/20 train-validation-test split. This reduces exact-profile overlap across partitions, but it cannot guarantee that all records from the same individual are separated.
+
+The audit also identified duplicate rows and conflicting target labels for some identical predictor profiles. These limitations are documented in the model metadata and project decision log. The app should be interpreted as a model-development demonstration, not an externally validated system.
+
+## 4. Application features
+
+GlucoGuide provides two interface modes.
+
+### User mode
+
+- **Home:** project introduction and entry point
+- **Risk Assessment:** step-by-step questionnaire; BMI is calculated from height and weight
+- **My Results:** model score, threshold-based result category, feature-level explanation, and educational next-step information
+- **AI Assistant:** optional Gemini-powered conversational explanation; a built-in offline response path is available when the API key is not configured
+- **About GlucoGuide:** data, purpose, and health-use disclaimer
+
+### Instructor mode
+
+The instructor-facing overview provides model and project inspection, including:
+
+- model card and intended-use documentation;
+- ROC and precision-recall performance views;
+- confusion matrix and classification metrics;
+- feature importance and model-comparison results;
+- Shapley-based explanation of an individual estimate;
+- false-positive / false-negative cost and threshold exploration;
+- methodology, subgroup fairness summaries, and limitations.
+
+The threshold and cost simulator is an educational analysis tool. Changes made there do not alter the default threshold used in the public user results.
+
+## 5. Repository structure
+
+```text
+Healthcare-Support-App/
+├── app.py                         # Streamlit entry point
+├── pages/
+│   ├── 1_Risk_Assessment.py       # Questionnaire
+│   ├── 2_My_Results.py            # Result and explanation
+│   ├── 3_About_GlucoGuide.py      # User-facing project information
+│   └── 4_Teacher_Overview.py      # Instructor/model overview
+├── components/
+│   └── ai_assistant.py             # AI assistant interface
+├── utils/                           # Prediction, explanations, UI, threshold,
+│                                    # localization, data and clinic utilities
+├── models/
+│   ├── pipeline.joblib              # Trained scikit-learn pipeline
+│   ├── model_meta.json              # Features, threshold, assumptions, metrics
+│   └── *.csv / *.npz                # Evaluation and analysis artifacts
+├── data/
+│   └── diabetes_binary_health_indicators_BRFSS2015.csv
+├── reports/                          # Training, validation and audit reports
+├── train.py                          # Rebuilds the model
+├── tune_models.py                    # Model-search workflow
+├── tests/                             # Application tests
+├── requirements.txt
+├── DECISION_LOG.md
+└── AI_USE_APPENDIX.md
 ```
 
-### Bước 2: Cài đặt Thư viện Phụ thuộc
+## 6. Run locally
+
+### Requirements
+
+Use a compatible Python environment. The project metadata records Python 3.13.9 and pins the main scientific-library versions in `requirements.txt`.
+
 ```bash
+# Create and activate a virtual environment
+python -m venv .venv
+
+# Windows
+.venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
-```
 
-### Bước 3: Cấu hình Khóa Gemini API (Tùy chọn)
-Để kích hoạt tính năng đối thoại thông minh của Trợ lý AI với mô hình `gemini-2.5-flash`:
-1. Sao chép tệp mẫu cấu hình:
-   ```bash
-   cp .streamlit/secrets.toml.example .streamlit/secrets.toml
-   ```
-2. Mở tệp `.streamlit/secrets.toml` và điền khóa API của bạn:
-   ```toml
-   GEMINI_API_KEY = "AIzaSy..."
-   ```
-*(Lưu ý: Nếu không cấu hình khóa API, ứng dụng vẫn hoạt động 100% bình thường với bộ giải thích quy luật lâm sàng offline tích hợp sẵn).*
-
-### Bước 4: Khởi chạy Ứng dụng Streamlit
-```bash
+# Start the app
 streamlit run app.py
 ```
 
-### Bước 5: Chạy Bộ Kiểm thử Tự động (Unit Tests)
+### Optional Gemini API configuration
+
+The AI Assistant can use the Gemini API when a key is configured. Copy the example secrets file:
+
+```bash
+# Windows PowerShell
+Copy-Item .streamlit/secrets.toml.example .streamlit/secrets.toml
+
+# macOS / Linux
+cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+```
+
+Then add your key to `.streamlit/secrets.toml`:
+
+```toml
+GEMINI_API_KEY = "YOUR_API_KEY"
+```
+
+Do not commit `.streamlit/secrets.toml` or expose API keys in source code, screenshots, or public logs. The app includes an offline fallback when the key is unavailable.
+
+### Run tests
+
 ```bash
 python -m unittest discover -s tests -v
 ```
 
+## 7. Deploy to Streamlit Community Cloud
+
+1. Push the project repository to GitHub.
+2. Open [Streamlit Community Cloud](https://share.streamlit.io/).
+3. Create a new app and select the repository, branch, and `app.py` as the entry point.
+4. Add `GEMINI_API_KEY` under the app's **Settings → Secrets** if the online AI assistant is required.
+5. Deploy and test the public app from a fresh browser session.
+
+The deployed app should load the saved pipeline; it should not retrain the model during normal user interaction.
+
+## 8. Limitations and responsible use
+
+- The model is trained on a **US 2015 telephone survey**, not a representative clinical dataset of Vietnamese users.
+- The target is **self-reported diabetes/prediabetes**, not laboratory-confirmed diagnosis.
+- The dataset contains duplicated profiles and some identical predictor profiles with conflicting labels.
+- No respondent identifier is available to guarantee a person-level train/test split.
+- Model scores and threshold categories are statistical outputs, not individual clinical probabilities.
+- False positives and false negatives have different consequences; the selected cost ratio is illustrative and subjective.
+- Subgroup analyses are exploratory and do not prove fairness or clinical safety.
+- The AI Assistant may generate inaccurate or overly general information. Its responses are not medical advice.
+- The project has not undergone clinical validation or prospective evaluation.
+
+**If you are concerned about diabetes, consult a qualified healthcare professional and discuss appropriate blood-glucose testing. Do not use GlucoGuide to diagnose, rule out, or treat a medical condition.**
+
+## 9. Project documentation
+
+- [`DECISION_LOG.md`](DECISION_LOG.md) — key modeling and implementation decisions
+- [`AI_USE_APPENDIX.md`](AI_USE_APPENDIX.md) — draft disclosure of AI-assisted work; the team must review and finalize it
+- [`models/model_meta.json`](models/model_meta.json) — model configuration, threshold, input ranges, and evaluation metrics
+- [`reports/`](reports/) — supporting experiments, data audit, and evaluation analyses
+
 ---
 
-## 4. Hướng dẫn Triển khai lên Streamlit Community Cloud
-
-1. Đưa toàn bộ mã nguồn lên kho lưu trữ GitHub của nhóm:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: complete GlucoGuide UI/UX redesign and AI assistant integration"
-   git branch -M main
-   git remote add origin <URL-GITHUB-REPO>
-   git push -u origin main
-   ```
-2. Truy cập [share.streamlit.io](https://share.streamlit.io/) và đăng nhập bằng tài khoản GitHub.
-3. Chọn **"New app"**, chọn kho lưu trữ và nhánh `main`, tệp khởi chạy là `app.py`.
-4. Trong mục **Advanced settings > Secrets**, dán cấu hình khóa API:
-   ```toml
-   GEMINI_API_KEY = "AIzaSy..."
-   ```
-5. Nhấn **Deploy** để phát hành ứng dụng trực tuyến.
+*GlucoGuide is an educational healthcare decision-support project. It is not intended for clinical use.*
