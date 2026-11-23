@@ -485,4 +485,47 @@ with st.sidebar:
     for slug, label, page_obj in nav_items:
         state_cls = "active" if page_obj == nav else "idle"
         with st.container(key=f"{slug}_{state_cls}"):
-            st.page_link(page_obj, label=
+            st.page_link(page_obj, label=label, use_container_width=True)
+
+    st.markdown('<div style="height:0.5rem;"></div>', unsafe_allow_html=True)
+    pick_language()
+
+    mode_lbl = tr("CHẾ ĐỘ", "MODE")
+    st.markdown(
+        f'<div class="sb-section-lbl">{mode_lbl}</div>',
+        unsafe_allow_html=True,
+    )
+    with st.container(key="sb_mode_seg"):
+        cur_mode = st.session_state.get("app_mode", "user")
+        selected_mode = st.radio(
+            "sb_mode_select_hidden",
+            options=["user", "teacher"],
+            format_func=lambda val: tr(
+                "Người dùng" if val == "user" else "Giảng viên",
+                "User" if val == "user" else "Teacher",
+            ),
+            index=0 if cur_mode == "user" else 1,
+            horizontal=True,
+            key="sb_mode_radio",
+            label_visibility="collapsed",
+        )
+        if selected_mode != cur_mode:
+            st.session_state["app_mode"] = selected_mode
+            st.rerun()
+
+    st.markdown(
+        f"""
+        <div class="sb-note">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#93C5FD" stroke-width="2" style="flex:0 0 16px;margin-top:2px">
+                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            <span>{tr(
+                "Công cụ phục vụ mục đích giáo dục, không dùng trong chẩn đoán lâm sàng.",
+                "Educational tool, not for clinical diagnosis."
+            )}</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+nav.run()
