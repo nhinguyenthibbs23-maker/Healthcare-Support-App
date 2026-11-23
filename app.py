@@ -40,7 +40,6 @@ def home_view():
         "Hello! Spend 2 minutes with me to assess your risk and proactively protect your health against diabetes!"
     )
     bubble_title = tr("Bác sĩ Nguyễn Hoài Đức", "Dr. Nguyen Hoai Duc")
-    bubble_hint = tr("Bấm để nghe bác sĩ nói", "Click to hear doctor speak")
     listen_lbl = tr("Nghe nói", "Listen")
     stop_lbl = tr("Dừng", "Stop")
     script_json = json.dumps(speech_script)
@@ -74,28 +73,28 @@ def home_view():
         '</svg>'
     )
 
-    doctor_iframe_template = '''<!DOCTYPE html>
+    doctor_iframe_html = f'''<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-  * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
-  html, body {
+- {{ box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }}
+  html, body {{
     margin: 0;
     padding: 0;
     background: transparent;
     overflow: hidden;
-  }
-  .hero-doctor-container {
+  }}
+  .hero-doctor-container {{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
     padding: 6px 4px 4px 4px;
-  }
-  .doctor-speech-bubble {
+  }}
+  .doctor-speech-bubble {{
     background: #F0F7FF;
     border: 1.5px solid #BFDBFE;
     border-radius: 16px;
@@ -108,17 +107,17 @@ def home_view():
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     animation: bubbleFloat 3.2s ease-in-out infinite;
-  }
-  .doctor-speech-bubble:hover {
+  }}
+  .doctor-speech-bubble:hover {{
     transform: translateY(-2px);
     border-color: #93C5FD;
     box-shadow: 0 6px 18px rgba(37, 99, 235, 0.16);
-  }
-  .doctor-speech-bubble.is-speaking {
+  }}
+  .doctor-speech-bubble.is-speaking {{
     border-color: #2563EB;
     background: #EFF6FF;
-  }
-  .doctor-speech-bubble::after {
+  }}
+  .doctor-speech-bubble::after {{
     content: '';
     position: absolute;
     bottom: -7px;
@@ -127,19 +126,19 @@ def home_view():
     border-width: 7px 7px 0;
     border-style: solid;
     border-color: #BFDBFE transparent transparent transparent;
-  }
-  @keyframes bubbleFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-  }
-  .bubble-header {
+  }}
+  @keyframes bubbleFloat {{
+    0%, 100% {{ transform: translateY(0); }}
+    50% {{ transform: translateY(-4px); }}
+  }}
+  .bubble-header {{
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     margin-bottom: 4px;
-  }
-  .bubble-title {
+  }}
+  .bubble-title {{
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -148,8 +147,8 @@ def home_view():
     color: #1E40AF;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-  }
-  .bubble-sound-btn {
+  }}
+  .bubble-sound-btn {{
     font-size: 0.72rem;
     font-weight: 600;
     color: #1D4ED8;
@@ -162,25 +161,25 @@ def home_view():
     gap: 4px;
     cursor: pointer;
     transition: all 0.15s ease;
-  }
-  .bubble-sound-btn:hover {
+  }}
+  .bubble-sound-btn:hover {{
     background: #DBEAFE;
-  }
-  .bubble-text {
+  }}
+  .bubble-text {{
     font-size: 0.82rem;
     font-weight: 500;
     line-height: 1.44;
     color: #1E3A8A;
     margin: 0;
     font-style: italic;
-  }
-  .hero-doctor-wrap {
+  }}
+  .hero-doctor-wrap {{
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-  }
-  .hero-doctor-img {
+  }}
+  .hero-doctor-img {{
     width: 100%;
     max-width: 315px;
     height: auto;
@@ -190,45 +189,45 @@ def home_view():
     border-radius: 22px;
     display: block;
     box-shadow: 0 10px 28px rgba(15, 40, 84, 0.12);
-  }
+  }}
 </style>
 </head>
 <body>
 <div class="hero-doctor-container">
-  <div class="doctor-speech-bubble" id="heroDoctorBubble" onclick="toggleDoctorBubble()" title="__BUBBLE_HINT__">
+  <div class="doctor-speech-bubble" id="heroDoctorBubble" onclick="toggleDoctorBubble()" title="{tr("Bấm để nghe bác sĩ nói", "Click to hear doctor speak")}">
     <div class="bubble-header">
-      <span class="bubble-title">__STETHOSCOPE_SVG__<span>__BUBBLE_TITLE__</span></span>
-      <span class="bubble-sound-btn" id="bubbleSoundBtn">__SPEAKER_SVG__<span>__LISTEN_LBL__</span></span>
+      <span class="bubble-title">{stethoscope_svg}<span>{bubble_title}</span></span>
+      <span class="bubble-sound-btn" id="bubbleSoundBtn">{speaker_svg}<span>{listen_lbl}</span></span>
     </div>
-    <p class="bubble-text">“__SPEECH_SCRIPT__”</p>
+    <p class="bubble-text">“{speech_script}”</p>
   </div>
   <div class="hero-doctor-wrap">
-    __DOCTOR_IMG_TAG__
+    {doctor_img_tag}
   </div>
 </div>
 
 <script>
-  const SCRIPT_TEXT = __SCRIPT_JSON__;
-  const LANG_CODE = '__CUR_L__';
-  const LISTEN_HTML = `__SPEAKER_SVG__<span>__LISTEN_LBL__</span>`;
-  const STOP_HTML = `__STOP_SVG__<span>__STOP_LBL__</span>`;
+  const SCRIPT_TEXT = {script_json};
+  const LANG_CODE = '{cur_l}';
+  const LISTEN_HTML = `{speaker_svg}<span>{listen_lbl}</span>`;
+  const STOP_HTML = `{stop_svg}<span>{stop_lbl}</span>`;
   let isSpeaking = false;
   let hasPlayedInitial = false;
 
-  function setSpeakingUI(active) {
+  function setSpeakingUI(active) {{
     isSpeaking = active;
     const btn = document.getElementById('bubbleSoundBtn');
     const bubble = document.getElementById('heroDoctorBubble');
     if (btn) btn.innerHTML = active ? STOP_HTML : LISTEN_HTML;
-    if (bubble) {
+    if (bubble) {{
       if (active) bubble.classList.add('is-speaking');
       else bubble.classList.remove('is-speaking');
-    }
-  }
+    }}
+  }}
 
-  function pickVoice(voices) {
+  function pickVoice(voices) {{
     if (!voices || !voices.length) return null;
-    if (LANG_CODE === 'vi') {
+    if (LANG_CODE === 'vi') {{
       const viVoices = voices.filter(v => v.lang.toLowerCase().startsWith('vi'));
       const isFemaleVi = (n) => (
         n.includes('hoaimy') || n.includes('hoai my') || n.includes('female') ||
@@ -237,7 +236,7 @@ def home_view():
         n.includes('standard-a') || n.includes('standard-c') ||
         n.includes('wavenet-a') || n.includes('wavenet-c') || n.includes('neural2-a')
       );
-      return viVoices.find(v => {
+      return viVoices.find(v => {{
         const n = v.name.toLowerCase().replace(/vietnam(ese)?/g, '');
         return !isFemaleVi(n) && (
           n.includes('namminh') || n.includes('nam minh') || n.includes('male') ||
@@ -247,9 +246,9 @@ def home_view():
           n.includes('standard-b') || n.includes('standard-d') ||
           n.includes('wavenet-b') || n.includes('wavenet-d') || n.includes('neural2-d')
         );
-      }) || viVoices.find(v => !isFemaleVi(v.name.toLowerCase().replace(/vietnam(ese)?/g, '')))
+      }}) || viVoices.find(v => !isFemaleVi(v.name.toLowerCase().replace(/vietnam(ese)?/g, '')))
         || viVoices[0] || null;
-    }
+    }}
     const enVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en'));
     const isFemaleEn = (n) => (
       n.includes('female') || n.includes('zira') || n.includes('jenny') ||
@@ -257,7 +256,7 @@ def home_view():
       n.includes('hazel') || n.includes('susan') || n.includes('victoria') ||
       n.includes('karen') || n.includes('moira') || n.includes('tessa')
     );
-    return enVoices.find(v => {
+    return enVoices.find(v => {{
       const n = v.name.toLowerCase();
       return !isFemaleEn(n) && (
         n.includes('male') || n.includes('guy') || n.includes('david') ||
@@ -270,13 +269,13 @@ def home_view():
         n.includes('standard-i') || n.includes('standard-j') ||
         n.includes('wavenet-b') || n.includes('wavenet-d')
       );
-    }) || enVoices.find(v => !isFemaleEn(v.name.toLowerCase()))
+    }}) || enVoices.find(v => !isFemaleEn(v.name.toLowerCase()))
       || enVoices[0] || null;
-  }
+  }}
 
-  function startSpeech() {
+  function startSpeech() {{
     if (!('speechSynthesis' in window)) return;
-    try {
+    try {{
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(SCRIPT_TEXT);
       utterance.lang = LANG_CODE === 'vi' ? 'vi-VN' : 'en-US';
@@ -285,83 +284,68 @@ def home_view():
       const v = pickVoice(window.speechSynthesis.getVoices());
       if (v) utterance.voice = v;
 
-      utterance.onstart = () => {
+      utterance.onstart = () => {{
         hasPlayedInitial = true;
         setSpeakingUI(true);
-      };
+      }};
       utterance.onend = () => setSpeakingUI(false);
       utterance.onerror = () => setSpeakingUI(false);
 
       window.speechSynthesis.speak(utterance);
-    } catch (e) {
+    }} catch (e) {{
       setSpeakingUI(false);
-    }
-  }
+    }}
+  }}
 
-  function toggleDoctorBubble() {
+  function toggleDoctorBubble() {{
     if (!('speechSynthesis' in window)) return;
-    if (window.speechSynthesis.speaking || isSpeaking) {
+    if (window.speechSynthesis.speaking || isSpeaking) {{
       window.speechSynthesis.cancel();
       setSpeakingUI(false);
-    } else {
+    }} else {{
       hasPlayedInitial = true;
       startSpeech();
-    }
-  }
+    }}
+  }}
 
-  function unlockAndPlayOnce() {
+  function unlockAndPlayOnce() {{
     if (hasPlayedInitial) return;
     hasPlayedInitial = true;
     startSpeech();
     cleanupUnlockListeners();
-  }
+  }}
 
-  function cleanupUnlockListeners() {
+  function cleanupUnlockListeners() {{
     document.removeEventListener('pointerdown', unlockAndPlayOnce);
     document.removeEventListener('keydown', unlockAndPlayOnce);
-    try {
-      if (window.parent && window.parent.document) {
+    try {{
+      if (window.parent && window.parent.document) {{
         window.parent.document.removeEventListener('pointerdown', unlockAndPlayOnce);
         window.parent.document.removeEventListener('keydown', unlockAndPlayOnce);
-      }
-    } catch (e) {}
-  }
+      }}
+    }} catch (e) {{}}
+  }}
 
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.onvoiceschanged = () => {
+  if ('speechSynthesis' in window) {{
+    window.speechSynthesis.onvoiceschanged = () => {{
       if (!hasPlayedInitial) startSpeech();
-    };
-  }
+    }};
+  }}
 
-  window.addEventListener('load', () => {
+  window.addEventListener('load', () => {{
     setTimeout(startSpeech, 250);
-    document.addEventListener('pointerdown', unlockAndPlayOnce, { once: true });
-    document.addEventListener('keydown', unlockAndPlayOnce, { once: true });
-    try {
-      if (window.parent && window.parent.document) {
-        window.parent.document.addEventListener('pointerdown', unlockAndPlayOnce, { once: true });
-        window.parent.document.addEventListener('keydown', unlockAndPlayOnce, { once: true });
-      }
-    } catch (e) {}
-  });
+    document.addEventListener('pointerdown', unlockAndPlayOnce, {{ once: true }});
+    document.addEventListener('keydown', unlockAndPlayOnce, {{ once: true }});
+    try {{
+      if (window.parent && window.parent.document) {{
+        window.parent.document.addEventListener('pointerdown', unlockAndPlayOnce, {{ once: true }});
+        window.parent.document.addEventListener('keydown', unlockAndPlayOnce, {{ once: true }});
+      }}
+    }} catch (e) {{}}
+  }});
 </script>
 </body>
 </html>'''
-
-    doctor_iframe_html = (
-        doctor_iframe_template
-        .replace("__BUBBLE_HINT__", bubble_hint)
-        .replace("__STETHOSCOPE_SVG__", stethoscope_svg)
-        .replace("__BUBBLE_TITLE__", bubble_title)
-        .replace("__SPEAKER_SVG__", speaker_svg)
-        .replace("__LISTEN_LBL__", listen_lbl)
-        .replace("__STOP_SVG__", stop_svg)
-        .replace("__STOP_LBL__", stop_lbl)
-        .replace("__SPEECH_SCRIPT__", speech_script)
-        .replace("__DOCTOR_IMG_TAG__", doctor_img_tag)
-        .replace("__SCRIPT_JSON__", script_json)
-        .replace("__CUR_L__", cur_l)
-    )
 
     with st.container(key="home_hero"):
         c_hero_l, c_hero_r = st.columns([1.25, 0.95], vertical_alignment="center", gap="large")
