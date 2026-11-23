@@ -2,11 +2,14 @@
 
 **Data Mining Course Project | Eastern International University (EIU)**  
 **Team members:**  
-  - [Nguyễn Bảo Ngọc](https://github.com/ngocnguyen-vn)
-  - Nguyễn Thị Yến Nhi
-  - Đỗ Nguyễn Minh Thư
-  - Lê Hoàng Lâm
-    
+
+[Nguyen Bao Ngoc](https://github.com/ngocnguyen-vn)
+
+[Nguyen Thi Yen Nhi](https://github.com/nhinguyenthibbs23-maker)
+
+[Do Nguyen Minh Thu](https://github.com/minhthu1302)
+
+Le Hoang Lam
 **App link:** https://healthcare-support-app-qsw9qo27b8ozxvlvedjsae.streamlit.app/ 
 
 **Video link:** 
