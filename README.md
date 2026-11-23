@@ -2,7 +2,7 @@
 
 **Data Mining Course Project | Eastern International University (EIU)**  
 **Team members:**  
-  - Nguyễn Bảo Ngọc
+  - [Nguyễn Bảo Ngọc](https://github.com/ngocnguyen-vn)
   - Nguyễn Thị Yến Nhi
   - Đỗ Nguyễn Minh Thư
   - Lê Hoàng Lâm
