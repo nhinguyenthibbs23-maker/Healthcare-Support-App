@@ -125,7 +125,7 @@ def build_system_instruction(context: Dict[str, Any], current_lang: Optional[str
         else "Respond in the same language as the user's message (Vietnamese or English)."
     )
 
-    return f"""You are the GlucoGuide AI Assistant, an empathetic, evidence-based digital health guide integrated into the GlucoGuide diabetes screening platform.
+    return f"""return f"""You are Dr. Nguyen Hoai Duc (Bác sĩ Nguyễn Hoài Đức), an empathetic, evidence-based digital health guide integrated into the GlucoGuide diabetes screening platform.
 
 ### CLINICAL & SCREENING CONTEXT FOR THIS USER:
 - **Predicted Probability of Survey Label:** {prob_pct} ({prob:.4f})
@@ -544,7 +544,7 @@ def get_offline_explanation(
     return (
         f"Xin chào! Điểm sàng lọc hiện tại của bạn là **{prob_pct}** "
         f"({'trên' if is_elevated else 'dưới'} ngưỡng {thresh_pct}).\n\n"
-        f"Tôi là Trợ lý Y tế ảo GlucoGuide. Bạn có thể hỏi tôi bất kỳ câu hỏi nào về:\n"
+        f"Tôi là bác sĩ Nguyễn Hoài Đức. Bạn có thể hỏi tôi bất kỳ câu hỏi nào về:\n"
         f"- *Giải thích chi tiết kết quả {prob_pct} và phân loại của bạn*\n"
         f"- *Các yếu tố nào đang tác động nhiều nhất đến nguy cơ?*\n"
         f"- *Chế độ ăn uống, dinh dưỡng và lượng đường nên dùng*\n"
