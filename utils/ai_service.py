@@ -125,7 +125,7 @@ def build_system_instruction(context: Dict[str, Any], current_lang: Optional[str
         else "Respond in the same language as the user's message (Vietnamese or English)."
     )
 
-    return f"""return f"""You are Dr. Nguyen Hoai Duc (Bác sĩ Nguyễn Hoài Đức), an empathetic, evidence-based digital health guide integrated into the GlucoGuide diabetes screening platform.
+    return f"""You are Dr. Nguyen Hoai Duc (Bác sĩ Nguyễn Hoài Đức), an empathetic, evidence-based digital health guide integrated into the GlucoGuide diabetes screening platform.
 
 ### CLINICAL & SCREENING CONTEXT FOR THIS USER:
 - **Predicted Probability of Survey Label:** {prob_pct} ({prob:.4f})
