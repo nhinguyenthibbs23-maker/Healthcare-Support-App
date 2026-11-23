@@ -58,9 +58,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-bmi_error = False
-
-with st.container(border=True):
+with st.form(f"step_{step}"):
     # =======================================================
     # QUESTION 1: AGE GROUP
     # =======================================================
@@ -81,7 +79,6 @@ with st.container(border=True):
             key="w_age",
             label_visibility="collapsed",
         )
-        F["age"] = sel_age
 
     # =======================================================
     # QUESTION 2: HEIGHT & WEIGHT TOGETHER -> BMI
@@ -93,7 +90,7 @@ with st.container(border=True):
             <span>{tr("2. Chiều cao và Cân nặng của bạn *", "2. Your Height & Weight *")}</span>
         </div>
         """, unsafe_allow_html=True)
-        st.caption(tr("Ứng dụng sẽ tự động tính chỉ số khối cơ thể (BMI) từ hai số đo này.", "Body Mass Index (BMI) is calculated automatically from both measurements."))
+        st.caption(tr("Ứng dụng sẽ tự động tính chỉ số khối cơ thể (BMI) khi bạn bấm Câu tiếp theo.", "Body Mass Index (BMI) is calculated automatically when you submit this step."))
 
         c_h, c_w = st.columns(2, gap="medium")
         with c_h:
@@ -105,7 +102,6 @@ with st.container(border=True):
                 step=0.5,
                 key="w_height",
             )
-            F["height"] = h_val
 
         with c_w:
             w_val = st.number_input(
@@ -116,18 +112,15 @@ with st.container(border=True):
                 step=0.5,
                 key="w_weight",
             )
-            F["weight"] = w_val
 
-        bmi_calc = float(w_val) / ((float(h_val) / 100.0) ** 2)
-        F["bmi"] = bmi_calc
-
-        if bmi_calc < 18.5:
+        bmi_preview = float(F.get("weight", 62.0)) / ((float(F.get("height", 165.0)) / 100.0) ** 2)
+        if bmi_preview < 18.5:
             bmi_cat_lbl = tr("Thiếu cân", "Underweight")
             bmi_color = "#3B82F6"
-        elif bmi_calc < 25.0:
+        elif bmi_preview < 25.0:
             bmi_cat_lbl = tr("Bình thường", "Normal")
             bmi_color = "#16A34A"
-        elif bmi_calc < 30.0:
+        elif bmi_preview < 30.0:
             bmi_cat_lbl = tr("Thừa cân", "Overweight")
             bmi_color = "#D97706"
         else:
@@ -137,21 +130,14 @@ with st.container(border=True):
         st.markdown(f"""
         <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:14px 20px;margin:14px 0 6px 0;">
             <div style="display:inline-flex;align-items:center;gap:6px;font-size:0.95rem;color:#475569;line-height:1.2;">
-                <span>{tr("Chỉ số BMI tính được:", "Calculated BMI:")}</span>
-                <strong style="font-size:1.15rem;color:#142D4E;line-height:1.2;">{bmi_calc:.1f} kg/m²</strong>
+                <span>{tr("Chỉ số BMI hiện tại:", "Current BMI:")}</span>
+                <strong style="font-size:1.15rem;color:#142D4E;line-height:1.2;">{bmi_preview:.1f} kg/m²</strong>
             </div>
             <span style="display:inline-flex;align-items:center;background:{bmi_color};color:#fff;font-size:0.82rem;font-weight:700;padding:5px 14px;border-radius:999px;line-height:1.2;">
                 {bmi_cat_lbl}
             </span>
         </div>
         """, unsafe_allow_html=True)
-
-        if not (12.0 <= bmi_calc <= 98.0):
-            bmi_error = True
-            st.warning(tr(
-                "Chỉ số BMI nằm ngoài phạm vi hợp lệ của mô hình (12.0 – 98.0). Vui lòng kiểm tra lại chiều cao và cân nặng.",
-                "Calculated BMI is outside the supported model range (12.0 – 98.0). Please check your height and weight."
-            ))
 
     # =======================================================
     # QUESTION 3: HIGH BLOOD PRESSURE
@@ -174,7 +160,6 @@ with st.container(border=True):
             key="w_bp",
             label_visibility="collapsed",
         )
-        F["bp"] = bp_choice
 
     # =======================================================
     # QUESTION 4: HIGH CHOLESTEROL
@@ -197,7 +182,6 @@ with st.container(border=True):
             key="w_chol",
             label_visibility="collapsed",
         )
-        F["chol"] = chol_choice
 
     # =======================================================
     # QUESTION 5: GENERAL HEALTH
@@ -220,7 +204,6 @@ with st.container(border=True):
             key="w_health",
             label_visibility="collapsed",
         )
-        F["health"] = health_choice
 
     # =======================================================
     # QUESTION 6: SMOKER
@@ -243,7 +226,6 @@ with st.container(border=True):
             key="w_smoker",
             label_visibility="collapsed",
         )
-        F["smoker"] = smoker_choice
 
     # =======================================================
     # QUESTION 7: PHYSICAL ACTIVITY
@@ -266,7 +248,6 @@ with st.container(border=True):
             key="w_activity",
             label_visibility="collapsed",
         )
-        F["activity"] = activity_choice
 
     # =======================================================
     # QUESTION 8: DIFFICULTY WALKING
@@ -289,56 +270,98 @@ with st.container(border=True):
             key="w_walk",
             label_visibility="collapsed",
         )
+
+    st.write("")
+    col_prev, col_next = st.columns([1, 1.2], gap="medium")
+
+    prev_clicked = False
+    with col_prev:
+        if step > 1:
+            prev_clicked = st.form_submit_button(
+                tr("← Câu trước", "← Previous"),
+                use_container_width=True,
+            )
+
+    with col_next:
+        if step < TOTAL_STEPS:
+            next_clicked = st.form_submit_button(
+                tr("Câu tiếp theo →", "Next Question →"),
+                type="primary",
+                use_container_width=True,
+            )
+            submit_clicked = False
+        else:
+            next_clicked = False
+            submit_clicked = st.form_submit_button(
+                tr("Hoàn tất & Xem Kết quả →", "Complete & Assess Risk →"),
+                type="primary",
+                use_container_width=True,
+            )
+
+
+# =======================================================
+# HANDLE FORM SUBMISSION OUTSIDE WITH BLOCK
+# =======================================================
+def save_current_step():
+    if step == 1:
+        F["age"] = sel_age
+    elif step == 2:
+        F["height"] = h_val
+        F["weight"] = w_val
+        F["bmi"] = float(w_val) / ((float(h_val) / 100.0) ** 2)
+    elif step == 3:
+        F["bp"] = bp_choice
+    elif step == 4:
+        F["chol"] = chol_choice
+    elif step == 5:
+        F["health"] = health_choice
+    elif step == 6:
+        F["smoker"] = smoker_choice
+    elif step == 7:
+        F["activity"] = activity_choice
+    elif step == 8:
         F["walk"] = walk_choice
 
 
-# Navigation Bar
-st.write("")
-col_prev, col_next = st.columns([1, 1.2], gap="medium")
+if prev_clicked:
+    save_current_step()
+    S["assess_step"] = step - 1
+    st.rerun()
 
-with col_prev:
-    if step > 1:
-        if st.button(tr("← Câu trước", "← Previous"), use_container_width=True):
-            S["assess_step"] = step - 1
-            st.rerun()
-
-with col_next:
-    if step < TOTAL_STEPS:
-        if st.button(
-            tr("Câu tiếp theo →", "Next Question →"),
-            type="primary",
-            use_container_width=True,
-            disabled=bmi_error,
-        ):
-            S["assess_step"] = step + 1
-            st.rerun()
+elif next_clicked:
+    save_current_step()
+    if step == 2 and not (12.0 <= F["bmi"] <= 98.0):
+        st.warning(tr(
+            f"Chỉ số BMI tính được là {F['bmi']:.1f} kg/m², nằm ngoài phạm vi hợp lệ của mô hình (12.0 – 98.0). Vui lòng kiểm tra lại chiều cao và cân nặng.",
+            f"Calculated BMI ({F['bmi']:.1f} kg/m²) is outside the supported model range (12.0 – 98.0). Please check your height and weight."
+        ))
     else:
-        if st.button(
-            tr("Hoàn tất & Xem Kết quả →", "Complete & Assess Risk →"),
-            type="primary",
-            use_container_width=True,
-        ):
-            bmi_final = float(F.get("weight", 62.0)) / ((float(F.get("height", 165.0)) / 100.0) ** 2)
-            bp_in = F.get("bp", "no")
-            chol_in = F.get("chol", "no")
+        S["assess_step"] = step + 1
+        st.rerun()
 
-            answers = {
-                "Age": int(F.get("age", 5)),
-                "BMI": float(bmi_final),
-                "HighBP": int(bp_in == "yes") if bp_in != "unknown" else float("nan"),
-                "HighChol": int(chol_in == "yes") if chol_in != "unknown" else float("nan"),
-                "GenHlth": int(F.get("health", 2)),
-                "Smoker": int(F.get("smoker", "no") == "yes"),
-                "PhysActivity": int(F.get("activity", "yes") == "yes"),
-                "DiffWalk": int(F.get("walk", "no") == "yes"),
-            }
+elif submit_clicked:
+    save_current_step()
+    bmi_final = float(F.get("weight", 62.0)) / ((float(F.get("height", 165.0)) / 100.0) ** 2)
+    bp_in = F.get("bp", "no")
+    chol_in = F.get("chol", "no")
 
-            with st.spinner(tr("Mô hình đang tính toán xác suất phân loại...", "Generating screening assessment...")):
-                try:
-                    prob = predict(answers)
-                    S["answers"] = answers
-                    S["probability"] = prob
-                    S["assess_step"] = 1
-                    st.switch_page("pages/2_My_Results.py")
-                except Exception as e:
-                    st.error(f"{tr('Lỗi tính toán:', 'Calculation error:')} {e}")
+    answers = {
+        "Age": int(F.get("age", 5)),
+        "BMI": float(bmi_final),
+        "HighBP": int(bp_in == "yes") if bp_in != "unknown" else float("nan"),
+        "HighChol": int(chol_in == "yes") if chol_in != "unknown" else float("nan"),
+        "GenHlth": int(F.get("health", 2)),
+        "Smoker": int(F.get("smoker", "no") == "yes"),
+        "PhysActivity": int(F.get("activity", "yes") == "yes"),
+        "DiffWalk": int(F.get("walk", "no") == "yes"),
+    }
+
+    with st.spinner(tr("Mô hình đang tính toán xác suất phân loại...", "Generating screening assessment...")):
+        try:
+            prob = predict(answers)
+            S["answers"] = answers
+            S["probability"] = prob
+            S["assess_step"] = 1
+            st.switch_page("pages/2_My_Results.py")
+        except Exception as e:
+            st.error(f"{tr('Lỗi tính toán:', 'Calculation error:')} {e}")
