@@ -380,7 +380,7 @@ def render_floating_ai_assistant(context: dict):
             )
 
             # ── Voice Recognition Button (auto-TTS ONLY triggers when spoken via Mic) ──
-            mic_label = tr("🎤 Nói chuyện với AI", "🎤 Speak to AI")
+            mic_label = tr("🎤 Nói chuyện với bác sĩ", "🎤 Speak to dr.Đức")
             listening_lbl = tr("⏹ Đang nghe...", "⏹ Listening...")
             no_support = tr("Trình duyệt không hỗ trợ nhận dạng giọng nói.", "Your browser does not support speech recognition.")
             speech_lang = "vi-VN" if cur_l == "vi" else "en-US"
