@@ -206,7 +206,7 @@ def render_floating_ai_assistant(context: dict):
         btn_bg_css = "background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;"
         avatar_html = '<div style="width:42px;height:42px;border-radius:50%;background:#EFF6FF;border:2.5px solid #2563EB;"></div>'
 
-    ai_badge_label = tr("Hỏi AI", "Ask AI")
+    ai_badge_label = tr("Hỏi bác sĩ Đức", "Ask Dr.Đức")
 
     st.markdown(f"""
     <style>
@@ -350,7 +350,6 @@ def render_floating_ai_assistant(context: dict):
                     {avatar_html}
                     <div>
                         <div style="font-size:0.98rem;font-weight:800;color:#142D4E;line-height:1.2;">{tr("Bác sĩ Nguyễn Hoài Đức", "Dr. Nguyen Hoai Duc")}</div>
-                        <div style="font-size:0.74rem;color:#64748B;">{tr("Trợ lý AI GlucoGuide · Hỗ trợ sàng lọc", "GlucoGuide AI · Screening Companion")}</div>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
