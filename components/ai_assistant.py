@@ -178,8 +178,8 @@ def _render_tts_button(text: str, lang_code: str, unique_id: str, auto_play: boo
 
 def _default_greeting() -> str:
     return tr(
-        "Xin chào! Tôi là Bác sĩ Nguyễn Hoài Đức – Trợ lý AI GlucoGuide. Tôi có thể giúp bạn hiểu rõ kết quả sàng lọc, các yếu tố tác động và gợi ý bước tiếp theo.",
-        "Hi! I'm Dr. Nguyen Hoai Duc – GlucoGuide AI Assistant. I can help explain your screening result, key contributing factors, and suggested next steps.",
+        "Xin chào! Tôi là Bác sĩ Nguyễn Hoài Đức. Tôi có thể giúp bạn hiểu rõ kết quả sàng lọc, các yếu tố tác động và gợi ý bước tiếp theo.",
+        "Hi! I'm Dr. Nguyen Hoai Duc. I can help explain your screening result, key contributing factors, and suggested next steps.",
     )
 
 
