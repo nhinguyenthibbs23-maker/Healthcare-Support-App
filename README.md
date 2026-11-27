@@ -13,7 +13,7 @@ Le Hoang Lam
 
 **App link:** https://healthcare-support-app-qsw9qo27b8ozxvlvedjsae.streamlit.app/ 
 
-**Video link:** 
+**Video link:** https://youtu.be/M-jpsLZf8z0?si=0umhSKK0m2uxzGKJ
     
 **Built with:** Python · scikit-learn · Streamlit · Plotly
 
