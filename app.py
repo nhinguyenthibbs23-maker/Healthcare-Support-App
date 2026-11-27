@@ -410,4 +410,112 @@ def home_view():
 # Determine Mode before building navigation
 mode = st.session_state.get("app_mode", "user")
 
-home_title = tr("Trang chủ",
+home_title = tr("Trang chủ", "Home")
+assess_title = tr("Khảo sát Nguy cơ", "Risk Assessment")
+results_title = tr("Kết quả của tôi", "My Results")
+about_title = tr("Về GlucoGuide", "About GlucoGuide")
+teacher_title = tr("Tổng quan Dự án", "Project Overview")
+
+home_page = st.Page(
+    home_view,
+    title=home_title,
+    default=(mode == "user"),
+)
+assess_page = st.Page(
+    "pages/1_Risk_Assessment.py",
+    title=assess_title,
+)
+results_page = st.Page(
+    "pages/2_My_Results.py",
+    title=results_title,
+)
+about_page = st.Page(
+    "pages/3_About_GlucoGuide.py",
+    title=about_title,
+)
+teacher_page = st.Page(
+    "pages/4_Teacher_Overview.py",
+    title=teacher_title,
+    default=(mode == "teacher"),
+)
+
+if mode == "user":
+    nav_items = [
+        ("nav_home", home_title, home_page),
+        ("nav_assess", assess_title, assess_page),
+        ("nav_results", results_title, results_page),
+        ("nav_about", about_title, about_page),
+    ]
+else:
+    nav_items = [
+        ("nav_teacher", teacher_title, teacher_page),
+    ]
+
+pages = [p for _, _, p in nav_items]
+nav = st.navigation(pages, position="hidden")
+
+# ============ CUSTOM SIDEBAR (LOGO AT VERY TOP) ============
+cur_lang = st.session_state.get("lang", "vi")
+logo_markup = get_eiu_logo_bilingual_svg(cur_lang)
+
+with st.sidebar:
+    st.markdown(
+        f'''
+        <div class="sb-logo-wrap">
+            {logo_markup}
+        </div>
+        <div class="sb-brand-row">
+            {HEART_PULSE_SVG}
+            <div class="sb-brand-name">GlucoGuide</div>
+        </div>
+        ''',
+        unsafe_allow_html=True,
+    )
+
+    for slug, label, page_obj in nav_items:
+        state_cls = "active" if page_obj == nav else "idle"
+        with st.container(key=f"{slug}_{state_cls}"):
+            st.page_link(page_obj, label=label, use_container_width=True)
+
+    st.markdown('<div style="height:0.5rem;"></div>', unsafe_allow_html=True)
+    pick_language()
+
+    mode_lbl = tr("CHẾ ĐỘ", "MODE")
+    st.markdown(
+        f'<div class="sb-section-lbl">{mode_lbl}</div>',
+        unsafe_allow_html=True,
+    )
+    with st.container(key="sb_mode_seg"):
+        cur_mode = st.session_state.get("app_mode", "user")
+        selected_mode = st.radio(
+            "sb_mode_select_hidden",
+            options=["user", "teacher"],
+            format_func=lambda val: tr(
+                "Người dùng" if val == "user" else "Giảng viên",
+                "User" if val == "user" else "Teacher",
+            ),
+            index=0 if cur_mode == "user" else 1,
+            horizontal=True,
+            key="sb_mode_radio",
+            label_visibility="collapsed",
+        )
+        if selected_mode != cur_mode:
+            st.session_state["app_mode"] = selected_mode
+            st.rerun()
+
+    st.markdown(
+        f"""
+        <div class="sb-note">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#93C5FD" stroke-width="2" style="flex:0 0 16px;margin-top:2px">
+                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            <span>{tr(
+                "Công cụ phục vụ mục đích giáo dục, không dùng trong chẩn đoán lâm sàng.",
+                "Educational tool, not for clinical diagnosis."
+            )}</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+nav.run()
