@@ -52,8 +52,17 @@ def get_doctor_data_uri() -> str | None:
     ))
 
 
-def get_eiu_logo_data_uri() -> str | None:
+def get_eiu_logo_data_uri(lang_code: str = "vi") -> str | None:
+    if lang_code == "vi":
+        return load_image_data_uri((
+            "assets/eiu_logo_vi.png",
+            "assets/eiu_logo_vi.jpg",
+            "assets/eiu_logo.png",
+            "assets/eiu_logo.jpg",
+        ))
     return load_image_data_uri((
+        "assets/eiu_logo_en.png",
+        "assets/eiu_logo_en.jpg",
         "assets/eiu_logo.png",
         "assets/eiu_logo.jpg",
     ))
@@ -92,27 +101,16 @@ NAV_TEACHER_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" f
 
 
 def get_eiu_logo_bilingual_svg(lang_code: str = "vi") -> str:
-    """Dùng trực tiếp ảnh assets/eiu_logo.png, tự động cắt khoảng trống và chuyển ngữ VI / EN."""
-    logo_uri = get_eiu_logo_data_uri()
+    """Hiển thị trực tiếp 2 ảnh logo tách riêng theo ngôn ngữ VI / EN trong thư mục assets."""
+    logo_uri = get_eiu_logo_data_uri(lang_code)
     if not logo_uri:
         return '<div style="color:#FFFFFF;font-weight:800;font-size:1.2rem;">EIU</div>'
 
-    if lang_code == "vi":
-        return f'''<div style="width:100%;max-width:255px;height:86px;overflow:hidden;position:relative;margin:0 auto;">
-  <img src="{logo_uri}" alt="EIU Logo VI"
-       style="width:740px !important;max-width:none !important;height:auto !important;position:absolute;top:-2px;left:50%;transform:translateX(-50%);display:block;"/>
-</div>'''
-    else:
-        return f'''<div style="width:100%;max-width:255px;height:88px;overflow:hidden;position:relative;margin:0 auto;">
-  <div style="width:100%;height:43px;overflow:hidden;position:relative;">
-    <img src="{logo_uri}" alt="EIU Top"
-         style="width:740px !important;max-width:none !important;height:auto !important;position:absolute;top:-2px;left:50%;transform:translateX(-50%);display:block;"/>
-  </div>
-  <div style="width:100%;height:45px;overflow:hidden;position:relative;">
-    <img src="{logo_uri}" alt="EIU Bottom EN"
-         style="width:740px !important;max-width:none !important;height:auto !important;position:absolute;top:-92px;left:50%;transform:translateX(-50%);display:block;"/>
-  </div>
-</div>'''
+    alt_text = "Đại học Quốc tế Miền Đông" if lang_code == "vi" else "Eastern International University"
+    return (
+        f'<img src="{logo_uri}" alt="{alt_text}" class="sb-logo-img" '
+        f'style="width:100%;max-width:255px;height:auto;display:block;margin:0 auto;object-fit:contain;" />'
+    )
 
 
 EIU_LOGO_TRANSPARENT_SVG = get_eiu_logo_bilingual_svg("vi")
