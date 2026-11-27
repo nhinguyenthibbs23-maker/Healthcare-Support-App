@@ -79,12 +79,16 @@ def home_view():
 <meta charset="utf-8"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-- {{ box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }}
+  * {{
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  }}
   html, body {{
     margin: 0;
     padding: 0;
+    width: 100%;
     background: transparent;
-    overflow: hidden;
+    overflow: visible;
   }}
   .hero-doctor-container {{
     display: flex;
@@ -92,14 +96,14 @@ def home_view():
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 6px 4px 4px 4px;
+    padding: 14px 16px 24px 16px;
   }}
   .doctor-speech-bubble {{
     background: #F0F7FF;
     border: 1.5px solid #BFDBFE;
     border-radius: 16px;
-    padding: 10px 14px;
-    margin-bottom: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
     position: relative;
     width: 100%;
@@ -161,6 +165,7 @@ def home_view():
     gap: 4px;
     cursor: pointer;
     transition: all 0.15s ease;
+    flex-shrink: 0;
   }}
   .bubble-sound-btn:hover {{
     background: #DBEAFE;
@@ -213,6 +218,13 @@ def home_view():
   const STOP_HTML = `{stop_svg}<span>{stop_lbl}</span>`;
   let isSpeaking = false;
   let hasPlayedInitial = false;
+
+  function resizeIframe() {{
+    const container = document.querySelector('.hero-doctor-container');
+    if (container && window.frameElement) {{
+      window.frameElement.style.height = (container.offsetHeight + 8) + 'px';
+    }}
+  }}
 
   function setSpeakingUI(active) {{
     isSpeaking = active;
@@ -333,6 +345,8 @@ def home_view():
   }}
 
   window.addEventListener('load', () => {{
+    resizeIframe();
+    setTimeout(resizeIframe, 150);
     setTimeout(startSpeech, 250);
     document.addEventListener('pointerdown', unlockAndPlayOnce, {{ once: true }});
     document.addEventListener('keydown', unlockAndPlayOnce, {{ once: true }});
@@ -343,6 +357,8 @@ def home_view():
       }}
     }} catch (e) {{}}
   }});
+
+  window.addEventListener('resize', resizeIframe);
 </script>
 </body>
 </html>'''
@@ -369,7 +385,7 @@ def home_view():
                 st.switch_page("pages/1_Risk_Assessment.py")
 
         with c_hero_r:
-            components.html(doctor_iframe_html, height=495, scrolling=False)
+            components.html(doctor_iframe_html, height=535, scrolling=False)
 
     st.write("")
 
