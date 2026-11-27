@@ -1,9 +1,7 @@
 import base64
-import io
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from PIL import Image
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -54,44 +52,11 @@ def get_doctor_data_uri() -> str | None:
     ))
 
 
-@st.cache_data(show_spinner=False)
 def get_eiu_logo_data_uri() -> str | None:
-    """Đọc assets/eiu_logo.png, tự động xóa nền (trắng/đen) thành trong suốt RGBA."""
-    for rel in ("assets/eiu_logo.png", "assets/eiu_logo.jpg"):
-        p = ROOT / rel
-        if p.exists() and p.is_file():
-            img = Image.open(p).convert("RGBA")
-            w, h = img.size
-            pixels = img.load()
-
-            corners = [
-                pixels[0, 0],
-                pixels[w - 1, 0],
-                pixels[0, h - 1],
-                pixels[w - 1, h - 1],
-            ]
-            bg_r = sum(c[0] for c in corners) // 4
-            bg_g = sum(c[1] for c in corners) // 4
-            bg_b = sum(c[2] for c in corners) // 4
-
-            new_data = []
-            tolerance = 35
-            for r, g, b, a in img.getdata():
-                if a == 0 or (
-                    abs(r - bg_r) < tolerance
-                    and abs(g - bg_g) < tolerance
-                    and abs(b - bg_b) < tolerance
-                ):
-                    new_data.append((0, 0, 0, 0))
-                else:
-                    new_data.append((r, g, b, a))
-
-            img.putdata(new_data)
-            buf = io.BytesIO()
-            img.save(buf, format="PNG")
-            b64 = base64.b64encode(buf.getvalue()).decode("ascii")
-            return f"data:image/png;base64,{b64}"
-    return None
+    return load_image_data_uri((
+        "assets/eiu_logo.png",
+        "assets/eiu_logo.jpg",
+    ))
 
 
 def _svg_mask_css(selector: str, svg_raw: str) -> str:
@@ -127,45 +92,27 @@ NAV_TEACHER_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" f
 
 
 def get_eiu_logo_bilingual_svg(lang_code: str = "vi") -> str:
-    """Dùng ảnh eiu_logo.png đã xóa nền kết hợp tên trường chuyển ngữ động VI / EN."""
+    """Dùng trực tiếp ảnh assets/eiu_logo.png, tự động cắt khoảng trống và chuyển ngữ VI / EN."""
     logo_uri = get_eiu_logo_data_uri()
-    if lang_code == "vi":
-        line1 = "TRƯỜNG ĐẠI HỌC QUỐC TẾ"
-        line2 = "MIỀN ĐÔNG"
-        sub_size = "11.6"
-    else:
-        line1 = "EASTERN INTERNATIONAL"
-        line2 = "UNIVERSITY"
-        sub_size = "11.4"
+    if not logo_uri:
+        return '<div style="color:#FFFFFF;font-weight:800;font-size:1.2rem;">EIU</div>'
 
-    if logo_uri:
-        return f'''<div style="display:flex;align-items:center;gap:10px;width:100%;">
-  <img src="{logo_uri}" alt="EIU Logo" style="width:76px !important;max-width:76px !important;height:auto !important;flex:0 0 76px;object-fit:contain;display:block;"/>
-  <div style="display:flex;flex-direction:column;justify-content:center;line-height:1.28;text-align:left;">
-    <span style="font-size:0.74rem;font-weight:800;color:#E2E8F0;letter-spacing:0.02em;">{line1}</span>
-    <span style="font-size:0.74rem;font-weight:800;color:#CBD5E1;letter-spacing:0.03em;">{line2}</span>
+    if lang_code == "vi":
+        return f'''<div style="width:100%;max-width:255px;height:86px;overflow:hidden;position:relative;margin:0 auto;">
+  <img src="{logo_uri}" alt="EIU Logo VI"
+       style="width:740px !important;max-width:none !important;height:auto !important;position:absolute;top:-2px;left:50%;transform:translateX(-50%);display:block;"/>
+</div>'''
+    else:
+        return f'''<div style="width:100%;max-width:255px;height:88px;overflow:hidden;position:relative;margin:0 auto;">
+  <div style="width:100%;height:43px;overflow:hidden;position:relative;">
+    <img src="{logo_uri}" alt="EIU Top"
+         style="width:740px !important;max-width:none !important;height:auto !important;position:absolute;top:-2px;left:50%;transform:translateX(-50%);display:block;"/>
+  </div>
+  <div style="width:100%;height:45px;overflow:hidden;position:relative;">
+    <img src="{logo_uri}" alt="EIU Bottom EN"
+         style="width:740px !important;max-width:none !important;height:auto !important;position:absolute;top:-92px;left:50%;transform:translateX(-50%);display:block;"/>
   </div>
 </div>'''
-
-    return f'''<svg viewBox="0 0 268 88" style="width:100%;max-width:268px;height:auto;display:block;" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g transform="translate(2, 10) scale(1.36)">
-    <rect x="14" y="2" width="16" height="4.5" rx="2.2" fill="#D4B475"/>
-    <rect x="6" y="9" width="14" height="4.5" rx="2.2" fill="#93C5FD"/>
-    <rect x="23" y="9" width="16" height="4.5" rx="2.2" fill="#D4B475"/>
-    <rect x="2" y="16" width="22" height="4.5" rx="2.2" fill="#D4B475"/>
-    <rect x="27" y="16" width="16" height="4.5" rx="2.2" fill="#93C5FD"/>
-    <rect x="1" y="23" width="15" height="4.5" rx="2.2" fill="#93C5FD"/>
-    <rect x="19" y="23" width="25" height="4.5" rx="2.2" fill="#D4B475"/>
-    <rect x="3" y="30" width="21" height="4.5" rx="2.2" fill="#D4B475"/>
-    <rect x="27" y="30" width="14" height="4.5" rx="2.2" fill="#93C5FD"/>
-    <rect x="8" y="37" width="14" height="4.5" rx="2.2" fill="#93C5FD"/>
-    <rect x="24" y="37" width="11" height="4.5" rx="2.2" fill="#D4B475"/>
-    <rect x="15" y="44" width="15" height="4.5" rx="2.2" fill="#D4B475"/>
-  </g>
-  <text x="74" y="38" fill="#FFFFFF" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="800" font-size="33" letter-spacing="1.2">EIU</text>
-  <text x="74" y="57" fill="#E2E8F0" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="700" font-size="{sub_size}" letter-spacing="0.25">{line1}</text>
-  <text x="74" y="73" fill="#CBD5E1" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="700" font-size="{sub_size}" letter-spacing="0.3">{line2}</text>
-</svg>'''
 
 
 EIU_LOGO_TRANSPARENT_SVG = get_eiu_logo_bilingual_svg("vi")
@@ -297,7 +244,7 @@ section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] svg {{
 .sb-logo-wrap {{
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     padding: 0.45rem 0.1rem 0.35rem 0.1rem;
     margin-top: 0.1rem;
     margin-bottom: 0.35rem;
@@ -503,4 +450,374 @@ div.stButton > button[kind="secondary"]:hover {{
     overflow: hidden !important;
 }}
 .brand-title {{
-    font-size:
+    font-size: 2.85rem;
+    font-weight: 800;
+    color: var(--deep-navy);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 0.65rem 0;
+}}
+.brand-subtitle {{
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--deep-navy);
+    margin: 0 0 0.75rem 0;
+}}
+.brand-lead {{
+    color: var(--text-secondary);
+    font-size: 0.96rem;
+    line-height: 1.6;
+    max-width: 32rem;
+    margin-bottom: 1.5rem;
+}}
+.hero-doctor-container {{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}}
+.doctor-speech-bubble {{
+    background: #F0F7FF;
+    border: 1.5px solid #BFDBFE;
+    border-radius: 16px;
+    padding: 9px 13px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+    position: relative;
+    width: 100%;
+    max-width: 325px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: bubbleFloat 3.2s ease-in-out infinite;
+}}
+.doctor-speech-bubble:hover {{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.16);
+}}
+.doctor-speech-bubble::after {{
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px 7px 0;
+    border-style: solid;
+    border-color: #BFDBFE transparent transparent transparent;
+}}
+@keyframes bubbleFloat {{
+    0%, 100% {{ transform: translateY(0); }}
+    50% {{ transform: translateY(-4px); }}
+}}
+.bubble-header {{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 3px;
+}}
+.bubble-title {{
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #1E40AF;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex: 1;
+}}
+.bubble-sound-btn {{
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #2563EB;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 10px;
+    padding: 2px 7px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}}
+.bubble-sound-btn:hover {{
+    background: #DBEAFE;
+}}
+.bubble-text {{
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.42;
+    color: #1E3A8A;
+    margin: 0;
+    font-style: italic;
+}}
+.hero-doctor-wrap {{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}}
+.hero-doctor-img {{
+    width: 100%;
+    max-width: 325px;
+    height: auto;
+    max-height: 420px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 24px;
+    display: block;
+    box-shadow: 0 10px 28px rgba(15, 40, 84, 0.12);
+    border: none;
+}}
+
+/* Animated Arrow on Button */
+@keyframes arrowBounceX {{
+    0%, 100% {{ transform: translateX(0); }}
+    50% {{ transform: translateX(6px); }}
+}}
+.st-key-home_hero button[kind="primary"] {{
+    transition: all 0.22s ease !important;
+}}
+.st-key-home_hero button[kind="primary"]:hover {{
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(37, 84, 163, 0.35) !important;
+}}
+.st-key-home_hero button[kind="primary"] p::after {{
+    content: " →";
+    display: inline-block;
+    animation: arrowBounceX 1.3s ease-in-out infinite;
+    margin-left: 6px;
+    font-weight: 800;
+}}
+
+.st-key-how_card {{
+    background: #FFFFFF !important;
+    border: 1px solid var(--border-card) !important;
+    border-radius: 20px !important;
+    padding: 1.5rem 2rem !important;
+    box-shadow: 0 4px 18px rgba(20, 45, 78, 0.03) !important;
+}}
+.how-layout {{
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 1.5rem;
+    align-items: center;
+}}
+.how-shield-box {{
+    width: 90px;
+    height: 90px;
+    border-radius: 18px;
+    background: #EFF6FF;
+    border: 1px solid #DBEAFE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}}
+.how-title {{
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--deep-navy);
+    margin-bottom: 0.85rem;
+}}
+.how-steps {{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 12px;
+    align-items: center;
+}}
+.how-step-box {{
+    background: #F8FAFC;
+    border: 1px solid #E8EFF8;
+    border-radius: 14px;
+    padding: 14px 14px;
+    text-align: center;
+}}
+.flow-num-badge {{
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary-bright);
+    color: #FFFFFF;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+}}
+.how-step-txt {{
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--deep-navy);
+    line-height: 1.35;
+}}
+.how-arrow {{
+    color: #93C5FD;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}}
+
+@keyframes flowChevron {{
+    0%, 100% {{ opacity: 0.35; transform: translateX(-2px); }}
+    50% {{ opacity: 1; transform: translateX(3px); }}
+}}
+.flow-ch-1 {{ animation: flowChevron 1.4s ease-in-out infinite; }}
+.flow-ch-2 {{ animation: flowChevron 1.4s ease-in-out 0.22s infinite; }}
+.flow-ch-3 {{ animation: flowChevron 1.4s ease-in-out 0.44s infinite; }}
+
+@media (prefers-reduced-motion: reduce) {{
+    .flow-ch-1, .flow-ch-2, .flow-ch-3 {{ animation: none; opacity: 0.9; }}
+}}
+
+.callout-blue {{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 14px;
+    padding: 12px 18px;
+    color: #1E3A8A;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}}
+
+.ring-card {{
+    background: #FFFFFF;
+    border-radius: 50%;
+    width: 170px;
+    height: 170px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-subtle);
+}}
+.bar-row {{ display: flex; align-items: center; gap: 14px; margin: 0.75rem 0; }}
+.bar-name {{ flex: 0 0 350px; font-size: 0.88rem; color: #1E293B; font-weight: 600; }}
+.bar-track {{ flex: 1; height: 12px; background: #EEF2F6; border-radius: 6px; overflow: hidden; }}
+.bar-fill {{ height: 100%; border-radius: 6px; min-width: 4px; }}
+.bar-val {{ flex: 0 0 140px; text-align: right; font-weight: 700; font-size: 0.84rem; }}
+
+@media (max-width: 860px) {{
+    .how-layout {{ grid-template-columns: 1fr; }}
+    .how-shield-box {{ display: none; }}
+    .how-steps {{ grid-template-columns: 1fr; }}
+    .how-arrow-cell {{ display: none; }}
+}}
+</style>""", unsafe_allow_html=True)
+
+
+def ring(frac: float, text: str, color: str, sub: str) -> str:
+    r = 64
+    c = 6.28318 * r
+    d = c * max(0.04, min(1.0, frac))
+    return (
+        f'<div class="ring-card">'
+        f'<svg viewBox="0 0 170 170" width="160" height="160">'
+        f'<circle cx="85" cy="85" r="{r}" fill="none" stroke="#E2E8F0" stroke-width="12"/>'
+        f'<circle cx="85" cy="85" r="{r}" fill="none" stroke="{color}" stroke-width="12" stroke-linecap="round" '
+        f'stroke-dasharray="{d:.1f} {c:.1f}" transform="rotate(-90 85 85)"/>'
+        f'<text x="85" y="87" text-anchor="middle" font-size="28" font-weight="800" fill="#142D4E" font-family="Plus Jakarta Sans,sans-serif">{text}</text>'
+        f'<text x="85" y="108" text-anchor="middle" font-size="11" font-weight="600" fill="#64748B" font-family="Plus Jakarta Sans,sans-serif">{sub}</text>'
+        f'</svg></div>'
+    )
+
+
+def _sweep(y_true, prob, fp_cost, fn_cost):
+    rows = []
+    for k in range(101):
+        th = k / 100.0
+        pred = (prob >= th).astype(int)
+        tp = int(np.sum((y_true == 1) & (pred == 1)))
+        fp = int(np.sum((y_true == 0) & (pred == 1)))
+        fn = int(np.sum((y_true == 1) & (pred == 0)))
+        tn = int(np.sum((y_true == 0) & (pred == 0)))
+        p = tp / (tp + fp) if (tp + fp) else 0.0
+        r = tp / (tp + fn) if (tp + fn) else 0.0
+        rows.append({
+            "threshold": th,
+            "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+            "precision": p, "recall": r,
+            "f1": 2 * p * r / (p + r) if (p + r) else 0.0,
+            "fpr": fp / (fp + tn) if (fp + tn) else 0.0,
+            "penalty": fp_cost * fp + fn_cost * fn,
+        })
+    df = pd.DataFrame(rows)
+    return df, df.loc[df["penalty"].idxmin()]
+
+
+def simulator(m, _t, *, key_prefix="sim"):
+    from utils.data_loader import load_validation_predictions
+    y_true, prob = load_validation_predictions()
+    _cost_node = m.get("costs") or m.get("cost_assumptions") or {}
+    _default_fp = float(_cost_node.get("fp", _cost_node.get("FP", 1.0)))
+    _default_fn = float(_cost_node.get("fn", _cost_node.get("FN", 5.0)))
+    ca, cb = st.columns(2)
+    fp_c = ca.number_input(
+        tr("Trọng số phạt Dương tính giả (FP)", "Penalty for false alarm (FP)"),
+        min_value=0.0, max_value=1000.0, value=_default_fp, step=1.0, key=f"{key_prefix}_fp",
+    )
+    fn_c = cb.number_input(
+        tr("Trọng số phạt Âm tính giả (FN)", "Penalty for missed positive label (FN)"),
+        min_value=0.0, max_value=1000.0, value=_default_fn, step=1.0, key=f"{key_prefix}_fn",
+    )
+    df, best = _sweep(y_true, prob, fp_c, fn_c)
+
+    m1, m2, m3 = st.columns(3)
+    m1.metric(tr("Ngưỡng tối ưu", "Cost-selected threshold"), f"{best['threshold']*100:.1f}%")
+    m2.metric(tr("Thiệt hại TB / người", "Val penalty / person"), f"{best['penalty']/len(y_true):.3f}")
+    m3.metric(tr("Tổng thiệt hại (Val)", "Total val penalty"), f"{best['penalty']:,.0f}")
+
+    th = st.slider(
+        tr("Thử nghiệm ngưỡng phân loại", "Try a threshold yourself"),
+        0.0, 1.0, float(round(m["threshold"], 2)), 0.01, key=f"{key_prefix}_th",
+    )
+    row = df.iloc[(df["threshold"] - th).abs().argmin()]
+    st.dataframe(
+        pd.DataFrame([{
+            "Threshold": f"{row['threshold']:.2f}",
+            "TP": int(row["tp"]), "FP": int(row["fp"]), "FN": int(row["fn"]), "TN": int(row["tn"]),
+            "Precision": f"{row['precision']:.4f}", "Recall": f"{row['recall']:.4f}",
+            "F1": f"{row['f1']:.4f}", "FPR": f"{row['fpr']:.4f}", "Penalty": f"{row['penalty']:,.0f}",
+        }]),
+        hide_index=True, use_container_width=True,
+    )
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df["threshold"], y=df["recall"], name="Recall", line=dict(color="#16A34A", width=3)))
+    fig.add_trace(go.Scatter(x=df["threshold"], y=df["precision"], name="Precision", line=dict(color="#1D4ED8", width=3)))
+    fig.add_trace(go.Scatter(x=df["threshold"], y=df["fpr"], name="FPR", line=dict(color="#D97706", width=2.2)))
+    fig.add_vline(x=float(row["threshold"]), line_dash="dash", line_color="#142D4E")
+    fig.update_layout(height=320, margin=dict(l=20, r=20, t=20, b=30), template="plotly_white", xaxis_title="Threshold", yaxis_title="Rate")
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def tuned_model_threshold_explorer(m=None, _t="tuned_sim", *, key_prefix=None):
+    from utils.data_loader import load_tuned_validation_predictions, load_tuned_model_validation, meta
+    if m is None or isinstance(m, str):
+        if isinstance(m, str):
+            _t = m
+        m = meta()
+    if key_prefix is None:
+        key_prefix = _t if isinstance(_t, str) else "tuned_sim"
+    y_true, probs_by_model = load_tuned_validation_predictions()
+    summary = load_tuned_model_validation()
+    names = [n for n in summary["model"].tolist() if n in probs_by_model]
+    if not names:
+        return
+    _cost_node = m.get("costs") or m.get("cost_assumptions") or {}
+    _default_fp = float(_cost_node.get("fp", _cost_node.get("FP", 1.0)))
+    _default_fn = float(_cost_node.get("fn", _cost_node.get("FN", 5.0)))
+    chosen = st.selectbox(tr("Mô hình đánh giá", "Model to examine"), names, key=f"{key_prefix}_m")
+    th = st.slider(tr("Ngưỡng mô hình", "Model threshold"), 0.0, 1.0, float(round(m["threshold"], 2)), 0.01, key=f"{key_prefix}_th")
+    df, _ = _sweep(y_true, probs_by_model[chosen], _default_fp, _default_fn)
+    row = df.iloc[(df["threshold"] - th).abs().argmin()]
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Precision", f"{row['precision']*100:.1f}%")
+    c2.metric("Recall", f"{row['recall']*100:.1f}%")
+    c3.metric("F1-Score", f"{row['f1']:.3f}")
