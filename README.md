@@ -9,7 +9,7 @@
 
 [Do Nguyen Minh Thu](https://github.com/minhthu1302)
 
-Le Hoang Lam
+[Le Hoang Lam](https://github.com/LamHoang30)
 
 **App link:** https://healthcare-support-app-qsw9qo27b8ozxvlvedjsae.streamlit.app/ 
 
