@@ -1,4 +1,8 @@
+import base64
+import io
 import json
+from pathlib import Path
+from PIL import Image
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -29,6 +33,67 @@ st.set_page_config(
 )
 
 style()
+
+
+@st.cache_data(show_spinner=False)
+def _get_clean_eiu_logo_uri() -> str:
+    """Đọc assets/eiu_logo.png, tự động xóa nền (trắng/đen) thành trong suốt RGBA."""
+    img_path = Path(__file__).resolve().parent / "assets" / "eiu_logo.png"
+    if not img_path.exists():
+        return ""
+
+    img = Image.open(img_path).convert("RGBA")
+    w, h = img.size
+    pixels = img.load()
+
+    corners = [
+        pixels[0, 0],
+        pixels[w - 1, 0],
+        pixels[0, h - 1],
+        pixels[w - 1, h - 1],
+    ]
+    bg_r = sum(c[0] for c in corners) // 4
+    bg_g = sum(c[1] for c in corners) // 4
+    bg_b = sum(c[2] for c in corners) // 4
+
+    new_data = []
+    tolerance = 35
+    for r, g, b, a in img.getdata():
+        if a == 0 or (
+            abs(r - bg_r) < tolerance
+            and abs(g - bg_g) < tolerance
+            and abs(b - bg_b) < tolerance
+        ):
+            new_data.append((0, 0, 0, 0))
+        else:
+            new_data.append((r, g, b, a))
+
+    img.putdata(new_data)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+    return f"data:image/png;base64,{b64}"
+
+
+def _render_sidebar_logo(lang_code: str) -> str:
+    """Hiển thị logo EIU đã xóa nền kết hợp tên trường chuyển ngữ động VI / EN."""
+    logo_uri = _get_clean_eiu_logo_uri()
+    if not logo_uri:
+        return get_eiu_logo_bilingual_svg(lang_code)
+
+    uni_name = (
+        "TRƯỜNG ĐẠI HỌC<br>QUỐC TẾ MIỀN ĐÔNG"
+        if lang_code == "vi"
+        else "EASTERN INTERNATIONAL<br>UNIVERSITY"
+    )
+    return f"""
+    <div style="display: flex; align-items: center; gap: 10px; padding: 4px 0;">
+        <img src="{logo_uri}" alt="EIU Logo" style="height: 44px; width: auto; object-fit: contain; flex-shrink: 0;" />
+        <div style="font-size: 0.72rem; font-weight: 800; line-height: 1.25; color: #F8FAFC; letter-spacing: 0.02em; text-align: left;">
+            {uni_name}
+        </div>
+    </div>
+    """
 
 
 def home_view():
@@ -456,7 +521,7 @@ nav = st.navigation(pages, position="hidden")
 
 # ============ CUSTOM SIDEBAR (LOGO AT VERY TOP) ============
 cur_lang = st.session_state.get("lang", "vi")
-logo_markup = get_eiu_logo_bilingual_svg(cur_lang)
+logo_markup = _render_sidebar_logo(cur_lang)
 
 with st.sidebar:
     st.markdown(
