@@ -80,15 +80,16 @@ def home_view():
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
   * {{
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
   }}
   html, body {{
     margin: 0;
     padding: 0;
     width: 100%;
+    max-width: 100%;
     background: transparent;
-    overflow: visible;
+    overflow-x: hidden;
   }}
   .hero-doctor-container {{
     display: flex;
@@ -96,18 +97,18 @@ def home_view():
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 14px 16px 24px 16px;
+    padding: 12px 18px 20px 18px;
   }}
   .doctor-speech-bubble {{
     background: #F0F7FF;
     border: 1.5px solid #BFDBFE;
     border-radius: 16px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
+    padding: 11px 14px;
+    margin-bottom: 14px;
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
     position: relative;
     width: 100%;
-    max-width: 330px;
+    max-width: 340px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     animation: bubbleFloat 3.2s ease-in-out infinite;
@@ -218,13 +219,6 @@ def home_view():
   const STOP_HTML = `{stop_svg}<span>{stop_lbl}</span>`;
   let isSpeaking = false;
   let hasPlayedInitial = false;
-
-  function resizeIframe() {{
-    const container = document.querySelector('.hero-doctor-container');
-    if (container && window.frameElement) {{
-      window.frameElement.style.height = (container.offsetHeight + 8) + 'px';
-    }}
-  }}
 
   function setSpeakingUI(active) {{
     isSpeaking = active;
@@ -345,8 +339,6 @@ def home_view():
   }}
 
   window.addEventListener('load', () => {{
-    resizeIframe();
-    setTimeout(resizeIframe, 150);
     setTimeout(startSpeech, 250);
     document.addEventListener('pointerdown', unlockAndPlayOnce, {{ once: true }});
     document.addEventListener('keydown', unlockAndPlayOnce, {{ once: true }});
@@ -357,14 +349,12 @@ def home_view():
       }}
     }} catch (e) {{}}
   }});
-
-  window.addEventListener('resize', resizeIframe);
 </script>
 </body>
 </html>'''
 
     with st.container(key="home_hero"):
-        c_hero_l, c_hero_r = st.columns([1.25, 0.95], vertical_alignment="center", gap="large")
+        c_hero_l, c_hero_r = st.columns([1.15, 1.05], vertical_alignment="center", gap="large")
 
         with c_hero_l:
             html(f"""
@@ -385,7 +375,7 @@ def home_view():
                 st.switch_page("pages/1_Risk_Assessment.py")
 
         with c_hero_r:
-            components.html(doctor_iframe_html, height=535, scrolling=False)
+            components.html(doctor_iframe_html, height=530, scrolling=False)
 
     st.write("")
 
@@ -420,112 +410,4 @@ def home_view():
 # Determine Mode before building navigation
 mode = st.session_state.get("app_mode", "user")
 
-home_title = tr("Trang chủ", "Home")
-assess_title = tr("Khảo sát Nguy cơ", "Risk Assessment")
-results_title = tr("Kết quả của tôi", "My Results")
-about_title = tr("Về GlucoGuide", "About GlucoGuide")
-teacher_title = tr("Tổng quan Dự án", "Project Overview")
-
-home_page = st.Page(
-    home_view,
-    title=home_title,
-    default=(mode == "user"),
-)
-assess_page = st.Page(
-    "pages/1_Risk_Assessment.py",
-    title=assess_title,
-)
-results_page = st.Page(
-    "pages/2_My_Results.py",
-    title=results_title,
-)
-about_page = st.Page(
-    "pages/3_About_GlucoGuide.py",
-    title=about_title,
-)
-teacher_page = st.Page(
-    "pages/4_Teacher_Overview.py",
-    title=teacher_title,
-    default=(mode == "teacher"),
-)
-
-if mode == "user":
-    nav_items = [
-        ("nav_home", home_title, home_page),
-        ("nav_assess", assess_title, assess_page),
-        ("nav_results", results_title, results_page),
-        ("nav_about", about_title, about_page),
-    ]
-else:
-    nav_items = [
-        ("nav_teacher", teacher_title, teacher_page),
-    ]
-
-pages = [p for _, _, p in nav_items]
-nav = st.navigation(pages, position="hidden")
-
-# ============ CUSTOM SIDEBAR (LOGO AT VERY TOP) ============
-cur_lang = st.session_state.get("lang", "vi")
-logo_markup = get_eiu_logo_bilingual_svg(cur_lang)
-
-with st.sidebar:
-    st.markdown(
-        f'''
-        <div class="sb-logo-wrap">
-            {logo_markup}
-        </div>
-        <div class="sb-brand-row">
-            {HEART_PULSE_SVG}
-            <div class="sb-brand-name">GlucoGuide</div>
-        </div>
-        ''',
-        unsafe_allow_html=True,
-    )
-
-    for slug, label, page_obj in nav_items:
-        state_cls = "active" if page_obj == nav else "idle"
-        with st.container(key=f"{slug}_{state_cls}"):
-            st.page_link(page_obj, label=label, use_container_width=True)
-
-    st.markdown('<div style="height:0.5rem;"></div>', unsafe_allow_html=True)
-    pick_language()
-
-    mode_lbl = tr("CHẾ ĐỘ", "MODE")
-    st.markdown(
-        f'<div class="sb-section-lbl">{mode_lbl}</div>',
-        unsafe_allow_html=True,
-    )
-    with st.container(key="sb_mode_seg"):
-        cur_mode = st.session_state.get("app_mode", "user")
-        selected_mode = st.radio(
-            "sb_mode_select_hidden",
-            options=["user", "teacher"],
-            format_func=lambda val: tr(
-                "Người dùng" if val == "user" else "Giảng viên",
-                "User" if val == "user" else "Teacher",
-            ),
-            index=0 if cur_mode == "user" else 1,
-            horizontal=True,
-            key="sb_mode_radio",
-            label_visibility="collapsed",
-        )
-        if selected_mode != cur_mode:
-            st.session_state["app_mode"] = selected_mode
-            st.rerun()
-
-    st.markdown(
-        f"""
-        <div class="sb-note">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#93C5FD" stroke-width="2" style="flex:0 0 16px;margin-top:2px">
-                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
-            </svg>
-            <span>{tr(
-                "Công cụ phục vụ mục đích giáo dục, không dùng trong chẩn đoán lâm sàng.",
-                "Educational tool, not for clinical diagnosis."
-            )}</span>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-nav.run()
+home_title = tr("Trang chủ",
